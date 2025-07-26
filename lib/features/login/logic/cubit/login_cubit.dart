@@ -1,5 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:net_openx_inventory/features/login/data/models/login_request_body.dart';
+import 'package:net_openx_inventory/features/login/data/repos/login_repo.dart';
 import 'package:net_openx_inventory/features/login/logic/cubit/login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -9,7 +10,7 @@ class LoginCubit extends Cubit<LoginState> {
   void emitLoginState() async {
     // Emit loading state
     emit(LoginState.loading());
-    final response = await _loginRepo.login(LoginRequestBody());
+    final response = await _loginRepo.login(LoginRequestBody(netUser: '', netPassword: '', dbName: '', dbUser: '', dbPassword: '', branchCode: ''));
 
     response.when(
       success: (data) {

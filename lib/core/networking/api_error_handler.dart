@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:doctor/core/networking/api_error_model.dart';
-
+import 'package:net_openx_inventory/core/networking/api_error_model.dart';
 import 'api_constants.dart';
 
 // TODO: wallahy I will refactor this .. Omar Ahmed
