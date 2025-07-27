@@ -6,14 +6,15 @@ class CustomerResponseModel {
   final bool disabled;
   final String? group;
   final bool selected;
-  final String text;
+  @JsonKey(name: 'text')
+  final String clientName;
   final String value;
 
   CustomerResponseModel({
     required this.disabled,
     this.group,
     required this.selected,
-    required this.text,
+    required this.clientName,
     required this.value,
   });
 

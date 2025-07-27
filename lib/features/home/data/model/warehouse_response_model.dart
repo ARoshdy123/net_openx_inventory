@@ -6,14 +6,15 @@ class WarehouseResponseModel {
   final bool disabled;
   final String? group;
   final bool selected;
-  final String text;
+  @JsonKey(name: 'text')
+  final String warehouse;
   final String value;
 
   WarehouseResponseModel({
     required this.disabled,
     this.group,
     required this.selected,
-    required this.text,
+    required this.warehouse,
     required this.value,
   });
 

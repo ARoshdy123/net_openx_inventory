@@ -12,7 +12,7 @@ CustomerResponseModel _$CustomerResponseModelFromJson(
   disabled: json['disabled'] as bool,
   group: json['group'] as String?,
   selected: json['selected'] as bool,
-  text: json['text'] as String,
+  clientName: json['text'] as String,
   value: json['value'] as String,
 );
 
@@ -22,6 +22,6 @@ Map<String, dynamic> _$CustomerResponseModelToJson(
   'disabled': instance.disabled,
   'group': instance.group,
   'selected': instance.selected,
-  'text': instance.text,
+  'text': instance.clientName,
   'value': instance.value,
 };

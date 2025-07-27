@@ -12,7 +12,7 @@ WarehouseResponseModel _$WarehouseResponseModelFromJson(
   disabled: json['disabled'] as bool,
   group: json['group'] as String?,
   selected: json['selected'] as bool,
-  text: json['text'] as String,
+  warehouse: json['text'] as String,
   value: json['value'] as String,
 );
 
@@ -22,6 +22,6 @@ Map<String, dynamic> _$WarehouseResponseModelToJson(
   'disabled': instance.disabled,
   'group': instance.group,
   'selected': instance.selected,
-  'text': instance.text,
+  'text': instance.warehouse,
   'value': instance.value,
 };

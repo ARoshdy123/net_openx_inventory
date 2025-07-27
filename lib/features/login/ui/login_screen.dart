@@ -67,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
               );
             },
             success: (data) {
+
               // Clear the navigation stack and push home screen
               context.pushReplacementNamed(
                 '/homeScreen',
