@@ -27,6 +27,7 @@ class AppRouter {
     routes: [
       GoRoute(
         path: Routes.loginScreen,
+
         builder: (context, state) => BlocProvider.value(
           value: getIt<LoginCubit>(),
           child: const LoginScreen(),
@@ -34,6 +35,7 @@ class AppRouter {
       ),
       GoRoute(
         path: Routes.homeScreen,
+        name: '/homeScreen',
         builder: (context, state) => const HomeScreen(),
       ),
     ],
