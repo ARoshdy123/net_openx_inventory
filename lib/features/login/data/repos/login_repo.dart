@@ -6,14 +6,14 @@ import 'package:net_openx_inventory/features/login/data/models/login_request_bod
 import 'package:net_openx_inventory/features/login/data/models/login_response_body.dart';
 
 class LoginRepo {
-  final LoginApiService _loginApiService;
-  LoginRepo(this._loginApiService);
+  final LoginApiService _apiService;
+  LoginRepo(this._apiService);
 
   Future<ApiResult<LoginResponseBody>> login(
       LoginRequestBody loginRequestBody,
       ) async {
     try {
-      final response = await _loginApiService.login(loginRequestBody);
+      final response = await _apiService.login(loginRequestBody);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ErrorHandler.handle(error));

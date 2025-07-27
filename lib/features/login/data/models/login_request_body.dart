@@ -9,6 +9,16 @@ class LoginRequestBody {
   final String dbUser     ;
   final String dbPassword ;
   final String branchCode ;
-  LoginRequestBody({required this.netUser, required this.netPassword,required this.dbName,required this.dbUser,required this.dbPassword,required this.branchCode,});
+  LoginRequestBody({
+    required this.netUser,
+    required this.netPassword,
+    required this.dbName,
+    required this.dbUser,
+    required this.dbPassword,
+    required this.branchCode,});
+  factory LoginRequestBody.fromJson(Map<String, dynamic> json) =>
+      _$LoginRequestBodyFromJson(json);
+
   Map<String, dynamic> toJson() => _$LoginRequestBodyToJson(this);
+
 }

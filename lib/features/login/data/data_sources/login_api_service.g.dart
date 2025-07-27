@@ -10,7 +10,7 @@ part of 'login_api_service.dart';
 
 class _LoginApiService implements LoginApiService {
   _LoginApiService(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'netsisbaseurl';
+    baseUrl ??= 'http://192.168.1.4:92/api/';
   }
 
   final Dio _dio;
@@ -30,7 +30,7 @@ class _LoginApiService implements LoginApiService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'auth/login',
+            'Auth/login',
             queryParameters: queryParameters,
             data: _data,
           )

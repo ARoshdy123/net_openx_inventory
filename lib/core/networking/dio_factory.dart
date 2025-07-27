@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:net_openx_inventory/core/helpers/shared_pref_helper.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class DioFactory {
@@ -6,6 +7,7 @@ class DioFactory {
   DioFactory._();
 
   static Dio? dio;
+  static String? accessToken;
 
   static Dio getDio() {
     Duration timeOut = const Duration(seconds: 30);
@@ -15,21 +17,28 @@ class DioFactory {
       dio!
         ..options.connectTimeout = timeOut
         ..options.receiveTimeout = timeOut;
-      // addDioHeaders();
+      addDioHeaders();
       addDioInterceptor();
+
       return dio!;
     } else {
       return dio!;
     }
   }
 
-  // static void addDioHeaders() async {
-  //   dio?.options.headers = {
-  //     'Accept': 'application/json',
-  //     'Authorization':
-  //         'Bearer ${await SharedPrefHelper.getSecuredString(SharedPrefKeys.userToken)}',
-  //   };
-  // }
+  static void addDioHeaders() async {
+    dio?.options.headers = {
+      'Accept': 'application/json',
+      'Authorization':
+          'Bearer ${await SharedPrefHelper.getSecuredString(SharedPrefKeys.userToken)}',
+    };
+  }
+
+  static void setToken(String token,){
+    accessToken = token;
+    dio?.options.headers['Authorization'] = 'Bearer $token';
+
+  }
 
   // static void setTokenIntoHeaderAfterLogin(String token) {
   //   dio?.options.headers = {
