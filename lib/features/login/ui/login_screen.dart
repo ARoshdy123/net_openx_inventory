@@ -68,23 +68,21 @@ class _LoginScreenState extends State<LoginScreen> {
             },
             success: (data) {
 
-              // Clear the navigation stack and push home screen
-              context.pushReplacementNamed(
-                '/homeScreen',
-              );
-            },
-            error: (error) {
-              // Pop loading dialog first if it's showing
-              if (Navigator.canPop(context)) {
-                Navigator.pop(context);
-              }
+              // 1) Dismiss the loading dialog
+              if (Navigator.canPop(context)) Navigator.pop(context);
+              // 2) Navigate to homeScreen by its name
+              context.goNamed('homeScreen');
 
-              // Show error message
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(error)),
-              );
             },
-            orElse: () {});
+          error: (error) {
+            // Dismiss loading if present
+            if (Navigator.canPop(context)) Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error)),
+            );
+          },
+          orElse: () {},
+        );
       },
   child: Scaffold(body: SingleChildScrollView(
       child: Padding(
