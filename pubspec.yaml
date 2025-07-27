@@ -65,6 +65,7 @@ dependencies:
   mobile_scanner: ^5.1.1
 
   flutter_secure_storage: ^9.2.4
+  drop_down_search_field: ^1.1.3
 
 
 
