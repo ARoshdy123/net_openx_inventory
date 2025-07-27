@@ -10,7 +10,7 @@ part of 'home_api_services.dart';
 
 class _HomeApiServices implements HomeApiServices {
   _HomeApiServices(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'http://192.168.1.4:92/api/';
+    baseUrl ??= 'http://192.168.1.207:92/api/';
   }
 
   final Dio _dio;

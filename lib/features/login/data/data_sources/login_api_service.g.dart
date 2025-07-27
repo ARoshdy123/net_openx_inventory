@@ -10,7 +10,7 @@ part of 'login_api_service.dart';
 
 class _LoginApiService implements LoginApiService {
   _LoginApiService(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'http://192.168.1.4:92/api/';
+    baseUrl ??= 'http://192.168.1.207:92/api/';
   }
 
   final Dio _dio;
