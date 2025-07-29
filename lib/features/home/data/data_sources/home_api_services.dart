@@ -1,5 +1,7 @@
 import 'package:net_openx_inventory/features/home/data/model/barcode_response_model.dart';
 import 'package:net_openx_inventory/features/home/data/model/customer_response_model.dart';
+import 'package:net_openx_inventory/features/home/data/model/sales_request_model.dart';
+import 'package:net_openx_inventory/features/home/data/model/sales_response_model.dart';
 import 'package:net_openx_inventory/features/home/data/model/warehouse_response_model.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
@@ -18,4 +20,7 @@ abstract class HomeApiServices {
 
   @GET(ApiConstants.warehouseEndpoint)
   Future<List<WarehouseResponseModel>> getWarehouses();
+
+  @POST(ApiConstants.salesEndpoint)
+  Future<SalesResponseModel> postSales(@Body() SalesRequestModel salesRequest);
 }

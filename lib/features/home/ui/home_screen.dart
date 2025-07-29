@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:drop_down_search_field/drop_down_search_field.dart';
 import 'package:net_openx_inventory/features/home/data/model/customer_response_model.dart';
+import 'package:net_openx_inventory/features/home/data/model/sales_request_model.dart';
 import 'package:net_openx_inventory/features/home/data/model/warehouse_response_model.dart';
+import 'package:net_openx_inventory/features/home/data/model/barcode_response_model.dart';
 import 'package:net_openx_inventory/features/home/logic/home_cubit.dart';
 import 'package:net_openx_inventory/features/home/logic/home_state.dart';
 import 'package:net_openx_inventory/features/home/ui/widgets/barcode_scanner_page.dart';
@@ -12,6 +14,27 @@ class HomeScreen extends StatefulWidget {
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
+}
+
+// Create a model for table items
+class InventoryTableItem {
+  final String itemCode;
+  final String itemName;
+  final double balanceQuantity;
+  final String warehouse;
+  final String serialNumber;
+  final double serialQuantity;
+  final String unit;
+
+  InventoryTableItem({
+    required this.itemCode,
+    required this.itemName,
+    required this.balanceQuantity,
+    required this.warehouse,
+    required this.serialNumber,
+    required this.serialQuantity,
+    required this.unit,
+  });
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -25,6 +48,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   CustomerResponseModel? selectedCustomer;
   WarehouseResponseModel? selectedWarehouse;
+
+  // List to store scanned items
+  List<InventoryTableItem> scannedItems = [];
 
   @override
   void initState() {
@@ -48,7 +74,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Simulate barcode scanning for now
   Future<void> _simulateBarcodeScanning() async {
-    // Show a dialog to input barcode for simulation
+    if (selectedWarehouse == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a warehouse first'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
     final simulatedBarcode = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
@@ -68,7 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           TextButton(
             onPressed: () {
-              // Return a default barcode for testing
               Navigator.of(context).pop('1234567890');
             },
             child: const Text('Use Test Barcode'),
@@ -84,6 +118,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Handle real barcode scanning when ready
   Future<void> _scanBarcode() async {
+    if (selectedWarehouse == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a warehouse first'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
     final scannedBarcode = await Navigator.push<String>(
       context,
       MaterialPageRoute(
@@ -97,17 +141,46 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _handleBarcodeScanned(String barcode) {
-    // Call the cubit to get barcode data
     context.read<HomeCubit>().getBarcode(barcode);
+  }
+
+  void _addItemToTable(BarcodeResponseModel barcodeData) {
+    setState(() {
+      scannedItems.add(
+        InventoryTableItem(
+          itemCode: barcodeData.itemCode,
+          itemName: barcodeData.itemName,
+          balanceQuantity: barcodeData.balanceQuantity,
+          warehouse: selectedWarehouse!.warehouse,
+          serialNumber: barcodeData.barcode,
+          serialQuantity: barcodeData.serialQty,
+          unit: barcodeData.unit,
+        ),
+      );
+    });
+
+    // Clear the barcode data after adding to table
+    context.read<HomeCubit>().clearBarcodeData();
+    _clearBarcodeFields();
+  }
+
+  void _removeItemFromTable(int index) {
+    setState(() {
+      scannedItems.removeAt(index);
+    });
+  }
+
+  void _clearBarcodeFields() {
+    _itemCodeController.clear();
+    _itemNameController.clear();
+    _barcodeController.clear();
+    _quantityController.clear();
+    _unitController.clear();
   }
 
   void _clearBarcodeData() {
     setState(() {
-      _itemCodeController.clear();
-      _itemNameController.clear();
-      _barcodeController.clear();
-      _quantityController.clear();
-      _unitController.clear();
+      _clearBarcodeFields();
     });
     context.read<HomeCubit>().clearBarcodeData();
   }
@@ -115,582 +188,733 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Home'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () {
-                context.read<HomeCubit>().loadInitialData();
-              },
-            ),
-          ],
-        ),
-        body: BlocConsumer<HomeCubit, HomeState>(
-        listener: (context, state) {
-      // Handle errors
-      if (state.error != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(state.error!),
-            backgroundColor: Colors.red,
-            action: SnackBarAction(
-              label: 'Dismiss',
-              textColor: Colors.white,
-              onPressed: () {
-                context.read<HomeCubit>().clearError();
-              },
-            ),
-          ),
-        );
-      }
-
-      // Update fields when barcode data is loaded
-      if (state.barcodeData != null) {
-        _itemCodeController.text = state.barcodeData!.itemCode;
-        _itemNameController.text = state.barcodeData!.itemName;
-        _barcodeController.text = state.barcodeData!.barcode;
-        _quantityController.text = state.barcodeData!.balanceQuantity.toString();
-        _unitController.text = state.barcodeData!.unit;
-      }
-    },
-    builder: (context, state) {
-    final isInitialLoading = (state.isLoadingCustomers || state.isLoadingWarehouses) &&
-    state.customers.isEmpty &&
-    state.warehouses.isEmpty;
-
-    if (isInitialLoading) {
-    return const Center(
-    child: Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-    CircularProgressIndicator(),
-    SizedBox(height: 16),
-    Text('Loading data...'),
-    ],
-    ),
-    );
-    }
-
-    return RefreshIndicator(
-    onRefresh: () => context.read<HomeCubit>().loadInitialData(),
-    child: SingleChildScrollView(
-    physics: const AlwaysScrollableScrollPhysics(),
-    child: Padding(
-    padding: const EdgeInsets.all(16),
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    // Client Dropdown
-    Row(
-    children: [
-    Text(
-    'Select Client',
-    style: Theme.of(context).textTheme.titleMedium,
-    ),
-    if (state.isLoadingCustomers) ...[
-    const SizedBox(width: 8),
-    const SizedBox(
-    width: 16,
-    height: 16,
-    child: CircularProgressIndicator(strokeWidth: 2),
-    ),
-    ],
-    ],
-    ),
-    const SizedBox(height: 8),
-    DropDownSearchField<CustomerResponseModel>(
-    displayAllSuggestionWhenTap: true,
-    isMultiSelectDropdown: false,
-    textFieldConfiguration: TextFieldConfiguration(
-    controller: _clientController,
-    enabled: !state.isLoadingCustomers,
-    decoration: InputDecoration(
-    labelText: 'Client',
-    hintText: state.customers.isEmpty
-    ? 'No clients available'
-        : 'Search for a client...',
-    border: const OutlineInputBorder(),
-    prefixIcon: const Icon(Icons.person_outline),
-    suffixIcon: selectedCustomer != null
-    ? IconButton(
-    icon: const Icon(Icons.clear),
-    onPressed: () {
-    setState(() {
-    selectedCustomer = null;
-    _clientController.clear();
-    });
-    },
-    )
-        : null,
-    ),
-    ),
-    suggestionsCallback: (pattern) async {
-    if (pattern.isEmpty) {
-    return state.customers;
-    }
-    return state.customers
-        .where((c) => c.clientName
-        .toLowerCase()
-        .contains(pattern.toLowerCase()))
-        .toList();
-    },
-    itemBuilder: (context, CustomerResponseModel suggestion) {
-    return ListTile(
-    leading: const Icon(Icons.person),
-    title: Text(suggestion.clientName),
-    subtitle: suggestion.group != null
-    ? Text('Group: ${suggestion.group}')
-        : null,
-    );
-    },
-    onSuggestionSelected: (CustomerResponseModel selection) {
-    setState(() {
-    selectedCustomer = selection;
-    _clientController.text = selection.clientName;
-    });
-    },
-    noItemsFoundBuilder: (context) => Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Text(
-    state.customers.isEmpty
-    ? 'No clients loaded'
-        : 'No clients found matching your search',
-    style: const TextStyle(color: Colors.grey),
-    ),
-    ),
-    ),
-
-    const SizedBox(height: 24),
-
-    // Warehouse Dropdown
-    Row(
-    children: [
-    Text(
-    'Select Warehouse',
-    style: Theme.of(context).textTheme.titleMedium,
-    ),
-    if (state.isLoadingWarehouses) ...[
-    const SizedBox(width: 8),
-    const SizedBox(
-    width: 16,
-    height: 16,
-    child: CircularProgressIndicator(strokeWidth: 2),
-    ),
-    ],
-    ],
-    ),
-    const SizedBox(height: 8),
-    DropDownSearchField<WarehouseResponseModel>(
-    displayAllSuggestionWhenTap: true,
-    isMultiSelectDropdown: false,
-    textFieldConfiguration: TextFieldConfiguration(
-    controller: _warehouseController,
-    enabled: !state.isLoadingWarehouses,
-    decoration: InputDecoration(
-    labelText: 'Warehouse',
-    hintText: state.warehouses.isEmpty
-    ? 'No warehouses available'
-        : 'Search for a warehouse...',
-    border: const OutlineInputBorder(),
-    prefixIcon: const Icon(Icons.warehouse_outlined),
-    suffixIcon: selectedWarehouse != null
-    ? IconButton(
-    icon: const Icon(Icons.clear),
-    onPressed: () {
-    setState(() {
-    selectedWarehouse = null;
-    _warehouseController.clear();
-    });
-    },
-    )
-        : null,
-    ),
-    ),
-    suggestionsCallback: (pattern) async {
-    if (pattern.isEmpty) {
-    return state.warehouses;
-    }
-    return state.warehouses
-        .where((w) => w.warehouse
-        .toLowerCase()
-        .contains(pattern.toLowerCase()))
-        .toList();
-    },
-    itemBuilder: (context, WarehouseResponseModel suggestion) {
-    return ListTile(
-    leading: const Icon(Icons.warehouse),
-    title: Text(suggestion.warehouse),
-    subtitle: suggestion.group != null
-    ? Text('Group: ${suggestion.group}')
-        : null,
-    );
-    },
-    onSuggestionSelected: (WarehouseResponseModel selection) {
-    setState(() {
-    selectedWarehouse = selection;
-    _warehouseController.text = selection.warehouse;
-    });
-    },
-    noItemsFoundBuilder: (context) => Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Text(
-    state.warehouses.isEmpty
-    ? 'No warehouses loaded'
-        : 'No warehouses found matching your search',
-    style: const TextStyle(color: Colors.grey),
-    ),
-    ),
-    ),
-
-    const SizedBox(height: 32),
-
-    // Barcode Scanner Section
-    Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-    color: Colors.blue.shade50,
-    borderRadius: BorderRadius.circular(8),
-    border: Border.all(color: Colors.blue.shade200),
-    ),
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Row(
-    children: [
-    Icon(Icons.qr_code_scanner, color: Colors.blue.shade700),
-    const SizedBox(width: 8),
-    Text(
-    'Barcode Scanner',
-    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-    color: Colors.blue.shade700,
-    fontWeight: FontWeight.bold,
-    ),
-    ),
-    const Spacer(),
-    if (state.isLoadingBarcode)
-    const SizedBox(
-    width: 20,
-    height: 20,
-    child: CircularProgressIndicator(strokeWidth: 2),
-    ),
-    ],
-    ),
-    const SizedBox(height: 16),
-    Row(
-    children: [
-    Expanded(
-    child: ElevatedButton.icon(
-    onPressed: state.isLoadingBarcode ? null : _simulateBarcodeScanning,
-    icon: const Icon(Icons.qr_code),
-    label: const Text('Simulate Scan'),
-    style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.orange,
-    foregroundColor: Colors.white,
-    padding: const EdgeInsets.symmetric(vertical: 12),
-    ),
-    ),
-    ),
-    const SizedBox(width: 8),
-    Expanded(
-    child: ElevatedButton.icon(
-    onPressed: state.isLoadingBarcode ? null : _scanBarcode,
-    icon: const Icon(Icons.camera_alt),
-    label: const Text('Scan Barcode'),
-    style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.blue,
-    foregroundColor: Colors.white,
-    padding: const EdgeInsets.symmetric(vertical: 12),
-    ),
-    ),
-    ),
-    ],
-    ),
-    if (state.barcodeData != null) ...[
-    const SizedBox(height: 16),
-    ElevatedButton.icon(
-    onPressed: _clearBarcodeData,
-    icon: const Icon(Icons.clear),
-    label: const Text('Clear Barcode Data'),
-    style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.red,
-    foregroundColor: Colors.white,
-    ),
-    ),
-    ],
-    ],
-    ),
-    ),
-
-    // Display barcode data if available
-    if (state.barcodeData != null) ...[
-    const SizedBox(height: 24),
-    Text(
-    'Item Information',
-    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-    fontWeight: FontWeight.bold,
-    ),
-    ),
-    const SizedBox(height: 16),
-
-    // Item Code (Read-only)
-    TextFormField(
-    controller: _itemCodeController,
-    readOnly: true,
-    decoration: const InputDecoration(
-    labelText: 'Item Code',
-    border: OutlineInputBorder(),
-    filled: true,
-    fillColor: Colors.grey,
-    prefixIcon: Icon(Icons.code),
-    ),
-    ),
-    const SizedBox(height: 16),
-
-    // Item Name (Read-only)
-    TextFormField(
-    controller: _itemNameController,
-    readOnly: true,
-    decoration: const InputDecoration(
-    labelText: 'Item Name',
-    border: OutlineInputBorder(),
-    filled: true,
-    fillColor: Colors.grey,
-    prefixIcon: Icon(Icons.inventory),
-    ),
-    ),
-    const SizedBox(height: 16),
-
-      // Additional Info Row
-      Row(
-        children: [
-          Expanded(
-            child: TextFormField(
-              controller: _barcodeController,
-              readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'Barcode',
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.grey,
-                prefixIcon: Icon(Icons.barcode_reader),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: TextFormField(
-              controller: _unitController,
-              readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'Unit',
-                border: OutlineInputBorder(),
-                filled: true,
-                fillColor: Colors.grey,
-                prefixIcon: Icon(Icons.straighten),
-              ),
-            ),
+      appBar: AppBar(
+        title: const Text('Inventory Management'),
+        backgroundColor: Colors.blue.shade700,
+        foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              context.read<HomeCubit>().loadInitialData();
+            },
           ),
         ],
       ),
-      const SizedBox(height: 16),
-
-      // Quantity (Read-only)
-      TextFormField(
-        controller: _quantityController,
-        readOnly: true,
-        decoration: const InputDecoration(
-          labelText: 'Balance Quantity',
-          border: OutlineInputBorder(),
-          filled: true,
-          fillColor: Colors.grey,
-          prefixIcon: Icon(Icons.inventory_2),
-        ),
-      ),
-
-      const SizedBox(height: 24),
-
-      // Additional barcode info
-      Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.green.shade50,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.green.shade200),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.info_outline, color: Colors.green.shade700),
-                const SizedBox(width: 8),
-                Text(
-                  'Additional Information',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green.shade700,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text('Warehouse Code: ${state.barcodeData!.depoKod}'),
-            Text('Serial Quantity: ${state.barcodeData!.serialQty}'),
-          ],
-        ),
-      ),
-    ],
-
-      const SizedBox(height: 32),
-
-      // Summary Section
-      if (selectedCustomer != null || selectedWarehouse != null || state.barcodeData != null)
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Summary',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+      body: BlocConsumer<HomeCubit, HomeState>(
+        listener: (context, state) {
+          // Handle errors
+          if (state.error != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error!),
+                backgroundColor: Colors.red,
+                action: SnackBarAction(
+                  label: 'Dismiss',
+                  textColor: Colors.white,
+                  onPressed: () {
+                    context.read<HomeCubit>().clearError();
+                  },
                 ),
               ),
-              const SizedBox(height: 12),
-              if (selectedCustomer != null) ...[
-                Row(
-                  children: [
-                    const Icon(Icons.person, size: 16),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Client: ${selectedCustomer!.clientName}',
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-              ],
-              if (selectedWarehouse != null) ...[
-                Row(
-                  children: [
-                    const Icon(Icons.warehouse, size: 16),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Warehouse: ${selectedWarehouse!.warehouse}',
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-              ],
-              if (state.barcodeData != null) ...[
-                Row(
-                  children: [
-                    const Icon(Icons.inventory, size: 16),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Item: ${state.barcodeData!.itemName}',
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(Icons.qr_code, size: 16),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Barcode: ${state.barcodeData!.barcode}',
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ],
-          ),
-        ),
-
-      const SizedBox(height: 24),
-
-      // Action Button
-      SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: (selectedCustomer != null &&
-              selectedWarehouse != null &&
-              state.barcodeData != null)
-              ? () {
-            // Handle form submission
-            _submitInventoryData();
+            );
           }
-              : null,
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: Colors.green,
-            disabledBackgroundColor: Colors.grey.shade300,
-          ),
-          child: Text(
-            'Submit Inventory',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: (selectedCustomer != null &&
-                  selectedWarehouse != null &&
-                  state.barcodeData != null)
-                  ? Colors.white
-                  : Colors.grey.shade600,
+
+          // When barcode data is loaded, add it to the table
+          if (state.barcodeData != null) {
+            _itemCodeController.text = state.barcodeData!.itemCode;
+            _itemNameController.text = state.barcodeData!.itemName;
+            _barcodeController.text = state.barcodeData!.barcode;
+            _quantityController.text = state.barcodeData!.balanceQuantity.toString();
+            _unitController.text = state.barcodeData!.unit;
+
+            // Automatically add to table
+            _addItemToTable(state.barcodeData!);
+          }
+          // Handle successful sales submission
+          if (state.salesResponse != null) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => AlertDialog(
+                icon: const Icon(Icons.check_circle, color: Colors.green, size: 64),
+                title: const Text('Success!'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Sales data submitted successfully!'),
+                    const SizedBox(height: 16),
+                    Text(
+                      '${scannedItems.length} items submitted',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    if (state.salesResponse!.message != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        state.salesResponse!.message!,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      context.read<HomeCubit>().clearSalesResponse();
+                      // Clear the form after successful submission
+                      _clearForm();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          final isInitialLoading = (state.isLoadingCustomers || state.isLoadingWarehouses) &&
+              state.customers.isEmpty &&
+              state.warehouses.isEmpty;
+
+          if (isInitialLoading) {
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('Loading data...'),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () => context.read<HomeCubit>().loadInitialData(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Selection Card
+                    Card(
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Client Dropdown
+                            Row(
+                              children: [
+                                Icon(Icons.store, color: Colors.blue.shade700),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Transaction Details',
+                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    color: Colors.blue.shade700,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+
+                            DropDownSearchField<CustomerResponseModel>(
+                              displayAllSuggestionWhenTap: true,
+                              isMultiSelectDropdown: false,
+                              textFieldConfiguration: TextFieldConfiguration(
+                                controller: _clientController,
+                                enabled: !state.isLoadingCustomers,
+                                decoration: InputDecoration(
+                                  labelText: 'Client',
+                                  hintText: state.customers.isEmpty
+                                      ? 'No clients available'
+                                      : 'Search for a client...',
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.person_outline),
+                                  suffixIcon: selectedCustomer != null
+                                      ? IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedCustomer = null;
+                                        _clientController.clear();
+                                      });
+                                    },
+                                  )
+                                      : null,
+                                ),
+                              ),
+                              suggestionsCallback: (pattern) async {
+                                if (pattern.isEmpty) {
+                                  return state.customers;
+                                }
+                                return state.customers
+                                    .where((c) => c.clientName
+                                    .toLowerCase()
+                                    .contains(pattern.toLowerCase()))
+                                    .toList();
+                              },
+                              itemBuilder: (context, CustomerResponseModel suggestion) {
+                                return ListTile(
+                                  leading: const Icon(Icons.person),
+                                  title: Text(suggestion.clientName),
+                                  subtitle: suggestion.group != null
+                                      ? Text('Group: ${suggestion.group}')
+                                      : null,
+                                );
+                              },
+                              onSuggestionSelected: (CustomerResponseModel selection) {
+                                setState(() {
+                                  selectedCustomer = selection;
+                                  _clientController.text = selection.clientName;
+                                });
+                              },
+                              noItemsFoundBuilder: (context) => Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  state.customers.isEmpty
+                                      ? 'No clients loaded'
+                                      : 'No clients found matching your search',
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // Warehouse Dropdown
+                            DropDownSearchField<WarehouseResponseModel>(
+                              displayAllSuggestionWhenTap: true,
+                              isMultiSelectDropdown: false,
+                              textFieldConfiguration: TextFieldConfiguration(
+                                controller: _warehouseController,
+                                enabled: !state.isLoadingWarehouses,
+                                decoration: InputDecoration(
+                                  labelText: 'Warehouse',
+                                  hintText: state.warehouses.isEmpty
+                                      ? 'No warehouses available'
+                                      : 'Search for a warehouse...',
+                                  border: const OutlineInputBorder(),
+                                  prefixIcon: const Icon(Icons.warehouse_outlined),
+                                  suffixIcon: selectedWarehouse != null
+                                      ? IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedWarehouse = null;
+                                        _warehouseController.clear();
+                                      });
+                                    },
+                                  )
+                                      : null,
+                                ),
+                              ),
+                              suggestionsCallback: (pattern) async {
+                                if (pattern.isEmpty) {
+                                  return state.warehouses;
+                                }
+                                return state.warehouses
+                                    .where((w) => w.warehouse
+                                    .toLowerCase()
+                                    .contains(pattern.toLowerCase()))
+                                    .toList();
+                              },
+                              itemBuilder: (context, WarehouseResponseModel suggestion) {
+                                return ListTile(
+                                  leading: const Icon(Icons.warehouse),
+                                  title: Text(suggestion.warehouse),
+                                  subtitle: suggestion.group != null
+                                      ? Text('Group: ${suggestion.group}')
+                                      : null,
+                                );
+                              },
+                              onSuggestionSelected: (WarehouseResponseModel selection) {
+                                setState(() {
+                                  selectedWarehouse = selection;
+                                  _warehouseController.text = selection.warehouse;
+                                });
+                              },
+                              noItemsFoundBuilder: (context) => Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  state.warehouses.isEmpty
+                                      ? 'No warehouses loaded'
+                                      : 'No warehouses found matching your search',
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Barcode Scanner Section
+                    Card(
+                      elevation: 4,
+                      color: Colors.blue.shade50,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.qr_code_scanner, color: Colors.blue.shade700, size: 28),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Barcode Scanner',
+                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    color: Colors.blue.shade700,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Spacer(),
+                                if (state.isLoadingBarcode)
+                                  const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: state.isLoadingBarcode ? null : _simulateBarcodeScanning,
+                                    icon: const Icon(Icons.qr_code),
+                                    label: const Text('Simulate Scan'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.orange,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: state.isLoadingBarcode ? null : _scanBarcode,
+                                    icon: const Icon(Icons.camera_alt),
+                                    label: const Text('Scan Barcode'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Inventory Table Section
+                    if (scannedItems.isNotEmpty) ...[
+                      Card(
+                        elevation: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(Icons.inventory_2, color: Colors.green.shade700, size: 28),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Scanned Items',
+                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                      color: Colors.green.shade700,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.shade100,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      '${scannedItems.length} items',
+                                      style: TextStyle(
+                                        color: Colors.green.shade700,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              // Scrollable table
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: DataTable(
+                                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade200),
+                                    columnSpacing: 20,
+                                    columns: const [
+                                      DataColumn(
+                                        label: Text(
+                                          'Item Code',
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Text(
+                                          'Item Name',
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Text(
+                                          'Balance Qty',
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        numeric: true,
+                                      ),
+                                      DataColumn(
+                                        label: Text(
+                                          'Warehouse',
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Text(
+                                          'Serial Number',
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Text(
+                                          'Serial Qty',
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        numeric: true,
+                                      ),
+                                      DataColumn(
+                                        label: Text(
+                                          'Action',
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
+                                    rows: scannedItems.asMap().entries.map((entry) {
+                                      final index = entry.key;
+                                      final item = entry.value;
+                                      return DataRow(
+                                        cells: [
+                                          DataCell(Text(item.itemCode)),
+                                          DataCell(
+                                            Container(
+                                              constraints: const BoxConstraints(maxWidth: 150),
+                                              child: Text(
+                                                item.itemName,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Text(
+                                              '${item.balanceQuantity} ${item.unit}',
+                                              style: TextStyle(
+                                                color: item.balanceQuantity > 0
+                                                    ? Colors.green.shade700
+                                                    : Colors.red.shade700,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                          DataCell(Text(item.warehouse)),
+                                          DataCell(
+                                            Container(
+                                              constraints: const BoxConstraints(maxWidth: 120),
+                                              child: Text(
+                                                item.serialNumber,
+                                                style: const TextStyle(
+                                                  fontFamily: 'monospace',
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          DataCell(Text(item.serialQuantity.toString())),
+                                          DataCell(
+                                            IconButton(
+                                              icon: const Icon(Icons.delete, color: Colors.red),
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) => AlertDialog(
+                                                    title: const Text('Delete Item'),
+                                                    content: Text(
+                                                      'Are you sure you want to remove "${item.itemName}" from the list?',
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () => Navigator.pop(context),
+                                                        child: const Text('Cancel'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          _removeItemFromTable(index);
+                                                          Navigator.pop(context);
+                                                        },
+                                                        style: TextButton.styleFrom(
+                                                          foregroundColor: Colors.red,
+                                                        ),
+                                                        child: const Text('Delete'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              // Summary Row
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.shade50,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Total Items: ${scannedItems.length}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Total Quantity: ${scannedItems.fold<double>(0, (sum, item) => sum + item.balanceQuantity).toStringAsFixed(2)}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ] else ...[
+                      // Empty state
+                      Card(
+                        elevation: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Center(
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.qr_code_scanner,
+                                  size: 64,
+                                  color: Colors.grey.shade400,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'No items scanned yet',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Start scanning barcodes to add items',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 24),
+
+                    // Action Buttons
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: scannedItems.isNotEmpty
+                                ? () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Clear All Items'),
+                                  content: const Text(
+                                    'Are you sure you want to clear all scanned items?',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          scannedItems.clear();
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: Colors.red,
+                                      ),
+                                      child: const Text('Clear All'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                                : null,
+                            icon: const Icon(Icons.clear_all),
+                            label: const Text('Clear All'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          flex: 2,
+                          child: ElevatedButton.icon(
+                            onPressed: (selectedCustomer != null &&
+                                selectedWarehouse != null &&
+                                scannedItems.isNotEmpty &&
+                                !state.isLoadingSales) // Disable when loading
+                                ? () {
+                              _submitInventoryData();
+                            }
+                                : null,
+                            icon: state.isLoadingSales
+                                ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                                : const Icon(Icons.check_circle),
+                            label: Text(state.isLoadingSales ? 'Submitting...' : 'Submit Inventory'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              textStyle: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
-    ],
-    ),
-    ),
-    ),
-    );
-    },
-        ),
     );
   }
 
   void _submitInventoryData() {
-    // Implement your submission logic here
-    final data = {
-      'customerId': selectedCustomer!.value,
-      'warehouseId': selectedWarehouse!.value,
-      'itemCode': _itemCodeController.text,
-      'itemName': _itemNameController.text,
-      'barcode': _barcodeController.text,
-      'quantity': _quantityController.text,
-      'unit': _unitController.text,
-    };
 
-    print('Submitting inventory data: $data');
+    // Create detail lines from scanned items
+    final List<DetailLine> detailLines = scannedItems.map((item) {
+      return DetailLine(
+        stokKodu: item.itemCode,
+        sfraGcmik: 0, // Always 0 as specified
+        sfraBf: 0, // Always 0 as specified
+        depoKodu: int.parse(selectedWarehouse!.value), // warehouse value
+        toDepoKodu: int.parse(selectedWarehouse!.value), // warehouse value
+        seriNo: item.serialNumber,
+        serialQty: item.serialQuantity.toInt(), // Convert to int if needed
+      );
+    }).toList();
 
-    // Show success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Inventory data submitted successfully!'),
-        backgroundColor: Colors.green,
-      ),
+    // Create the sales request model
+    final salesRequest = SalesRequestModel(
+      cariKod: selectedCustomer!.value.toString(), // Customer code
+      tarih: DateTime.now().toIso8601String(), // Current date/time
+      detaillines: detailLines,
     );
 
-    // Clear the form after submission if needed
-    // _clearForm();
+    // Submit through Cubit
+    context.read<HomeCubit>().createSales(salesRequest);
+
+    // Show success dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        icon: const Icon(Icons.check_circle, color: Colors.green, size: 64),
+        title: const Text('Success!'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Inventory data submitted successfully!'),
+            const SizedBox(height: 16),
+            Text(
+              '${scannedItems.length} items submitted',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // Clear the form after successful submission
+              _clearForm();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _clearForm() {
@@ -699,6 +923,7 @@ class _HomeScreenState extends State<HomeScreen> {
       selectedWarehouse = null;
       _clientController.clear();
       _warehouseController.clear();
+      scannedItems.clear();
     });
     _clearBarcodeData();
   }

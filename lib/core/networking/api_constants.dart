@@ -4,6 +4,7 @@ class ApiConstants {
   static const String barcodeEndpoint = 'Item/api/item/by-barcode?barcode=WHP34%2F027.24.00914';
   static const String customerEndpoint = 'Customer/api/customer/list';
   static const String warehouseEndpoint = 'Warehouse/api/warehouse/list';
+  static const String salesEndpoint = 'Sales/create';
 }
 
 class ApiErrors {

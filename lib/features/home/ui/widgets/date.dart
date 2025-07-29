@@ -43,18 +43,7 @@ class _FieldsState extends State<Fields> {
           },
         ),
         const SizedBox(height: 16),
-        DateTimeField(
-          value: selectedTime,
-          decoration: const InputDecoration(labelText: 'Enter Time'),
-          mode: DateTimeFieldPickerMode.time,
-          pickerPlatform: widget.platform,
-          onChanged: (DateTime? value) {
-            print(value);
-            setState(() {
-              selectedTime = value;
-            });
-          },
-        ),
+
       ],
     );
   }

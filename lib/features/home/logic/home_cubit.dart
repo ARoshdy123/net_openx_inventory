@@ -1,5 +1,6 @@
 // home_cubit.dart
 import 'package:bloc/bloc.dart';
+import 'package:net_openx_inventory/features/home/data/model/sales_request_model.dart';
 import 'package:net_openx_inventory/features/home/data/repo/home_repo.dart';
 import 'home_state.dart';
 
@@ -56,6 +57,22 @@ class HomeCubit extends Cubit<HomeState> {
     );
   }
 
+  Future<void> createSales(SalesRequestModel salesRequest) async {
+    emit(state.copyWith(isLoadingSales: true, error: null));
+
+    final result = await homeRepo.postSales(salesRequest);
+    result.when(
+      success: (salesResponse) => emit(state.copyWith(
+        salesResponse: salesResponse,
+        isLoadingSales: false,
+      )),
+      failure: (error) => emit(state.copyWith(
+        error: error.apiErrorModel.message ?? 'Failed to submit sales data',
+        isLoadingSales: false,
+      )),
+    );
+  }
+
   // Load both customers and warehouses
   Future<void> loadInitialData() async {
     await Future.wait([
@@ -70,5 +87,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   void clearBarcodeData() {
     emit(state.copyWith(barcodeData: null));
+  }
+  void clearSalesResponse() {
+    emit(state.copyWith(salesResponse: null));
   }
 }

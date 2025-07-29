@@ -4,6 +4,8 @@ import 'package:net_openx_inventory/core/networking/api_result.dart';
 import 'package:net_openx_inventory/features/home/data/data_sources/home_api_services.dart';
 import 'package:net_openx_inventory/features/home/data/model/barcode_response_model.dart';
 import 'package:net_openx_inventory/features/home/data/model/customer_response_model.dart';
+import 'package:net_openx_inventory/features/home/data/model/sales_request_model.dart';
+import 'package:net_openx_inventory/features/home/data/model/sales_response_model.dart';
 import 'package:net_openx_inventory/features/home/data/model/warehouse_response_model.dart';
 
 class HomeRepo {
@@ -35,4 +37,15 @@ class HomeRepo {
       return ApiResult.failure(ErrorHandler.handle(error));
     }
   }
+
+
+  Future<ApiResult<SalesResponseModel>> postSales(SalesRequestModel salesRequest) async {
+    try {
+      final response = await _homeApiServices.postSales(salesRequest);
+      return ApiResult.success(response);
+    } on DioException catch (error) {
+      return ApiResult.failure(ErrorHandler.handle(error));
+    }
+  }
 }
+

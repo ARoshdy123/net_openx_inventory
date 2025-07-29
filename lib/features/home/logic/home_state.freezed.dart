@@ -20,11 +20,13 @@ mixin _$HomeState {
   bool get isLoadingCustomers => throw _privateConstructorUsedError;
   bool get isLoadingWarehouses => throw _privateConstructorUsedError;
   bool get isLoadingBarcode => throw _privateConstructorUsedError;
+  bool get isLoadingSales => throw _privateConstructorUsedError;
   List<CustomerResponseModel> get customers =>
       throw _privateConstructorUsedError;
   List<WarehouseResponseModel> get warehouses =>
       throw _privateConstructorUsedError;
   BarcodeResponseModel? get barcodeData => throw _privateConstructorUsedError;
+  SalesResponseModel? get salesResponse => throw _privateConstructorUsedError;
   String? get error => throw _privateConstructorUsedError;
 
   /// Create a copy of HomeState
@@ -43,9 +45,11 @@ abstract class $HomeStateCopyWith<$Res> {
     bool isLoadingCustomers,
     bool isLoadingWarehouses,
     bool isLoadingBarcode,
+    bool isLoadingSales,
     List<CustomerResponseModel> customers,
     List<WarehouseResponseModel> warehouses,
     BarcodeResponseModel? barcodeData,
+    SalesResponseModel? salesResponse,
     String? error,
   });
 }
@@ -68,9 +72,11 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
     Object? isLoadingCustomers = null,
     Object? isLoadingWarehouses = null,
     Object? isLoadingBarcode = null,
+    Object? isLoadingSales = null,
     Object? customers = null,
     Object? warehouses = null,
     Object? barcodeData = freezed,
+    Object? salesResponse = freezed,
     Object? error = freezed,
   }) {
     return _then(
@@ -90,6 +96,11 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
                     ? _value.isLoadingBarcode
                     : isLoadingBarcode // ignore: cast_nullable_to_non_nullable
                         as bool,
+            isLoadingSales:
+                null == isLoadingSales
+                    ? _value.isLoadingSales
+                    : isLoadingSales // ignore: cast_nullable_to_non_nullable
+                        as bool,
             customers:
                 null == customers
                     ? _value.customers
@@ -105,6 +116,11 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
                     ? _value.barcodeData
                     : barcodeData // ignore: cast_nullable_to_non_nullable
                         as BarcodeResponseModel?,
+            salesResponse:
+                freezed == salesResponse
+                    ? _value.salesResponse
+                    : salesResponse // ignore: cast_nullable_to_non_nullable
+                        as SalesResponseModel?,
             error:
                 freezed == error
                     ? _value.error
@@ -129,9 +145,11 @@ abstract class _$$HomeStateImplCopyWith<$Res>
     bool isLoadingCustomers,
     bool isLoadingWarehouses,
     bool isLoadingBarcode,
+    bool isLoadingSales,
     List<CustomerResponseModel> customers,
     List<WarehouseResponseModel> warehouses,
     BarcodeResponseModel? barcodeData,
+    SalesResponseModel? salesResponse,
     String? error,
   });
 }
@@ -153,9 +171,11 @@ class __$$HomeStateImplCopyWithImpl<$Res>
     Object? isLoadingCustomers = null,
     Object? isLoadingWarehouses = null,
     Object? isLoadingBarcode = null,
+    Object? isLoadingSales = null,
     Object? customers = null,
     Object? warehouses = null,
     Object? barcodeData = freezed,
+    Object? salesResponse = freezed,
     Object? error = freezed,
   }) {
     return _then(
@@ -175,6 +195,11 @@ class __$$HomeStateImplCopyWithImpl<$Res>
                 ? _value.isLoadingBarcode
                 : isLoadingBarcode // ignore: cast_nullable_to_non_nullable
                     as bool,
+        isLoadingSales:
+            null == isLoadingSales
+                ? _value.isLoadingSales
+                : isLoadingSales // ignore: cast_nullable_to_non_nullable
+                    as bool,
         customers:
             null == customers
                 ? _value._customers
@@ -190,6 +215,11 @@ class __$$HomeStateImplCopyWithImpl<$Res>
                 ? _value.barcodeData
                 : barcodeData // ignore: cast_nullable_to_non_nullable
                     as BarcodeResponseModel?,
+        salesResponse:
+            freezed == salesResponse
+                ? _value.salesResponse
+                : salesResponse // ignore: cast_nullable_to_non_nullable
+                    as SalesResponseModel?,
         error:
             freezed == error
                 ? _value.error
@@ -207,9 +237,11 @@ class _$HomeStateImpl implements _HomeState {
     this.isLoadingCustomers = false,
     this.isLoadingWarehouses = false,
     this.isLoadingBarcode = false,
+    this.isLoadingSales = false,
     final List<CustomerResponseModel> customers = const [],
     final List<WarehouseResponseModel> warehouses = const [],
     this.barcodeData,
+    this.salesResponse,
     this.error,
   }) : _customers = customers,
        _warehouses = warehouses;
@@ -223,6 +255,9 @@ class _$HomeStateImpl implements _HomeState {
   @override
   @JsonKey()
   final bool isLoadingBarcode;
+  @override
+  @JsonKey()
+  final bool isLoadingSales;
   final List<CustomerResponseModel> _customers;
   @override
   @JsonKey()
@@ -244,11 +279,13 @@ class _$HomeStateImpl implements _HomeState {
   @override
   final BarcodeResponseModel? barcodeData;
   @override
+  final SalesResponseModel? salesResponse;
+  @override
   final String? error;
 
   @override
   String toString() {
-    return 'HomeState(isLoadingCustomers: $isLoadingCustomers, isLoadingWarehouses: $isLoadingWarehouses, isLoadingBarcode: $isLoadingBarcode, customers: $customers, warehouses: $warehouses, barcodeData: $barcodeData, error: $error)';
+    return 'HomeState(isLoadingCustomers: $isLoadingCustomers, isLoadingWarehouses: $isLoadingWarehouses, isLoadingBarcode: $isLoadingBarcode, isLoadingSales: $isLoadingSales, customers: $customers, warehouses: $warehouses, barcodeData: $barcodeData, salesResponse: $salesResponse, error: $error)';
   }
 
   @override
@@ -262,6 +299,8 @@ class _$HomeStateImpl implements _HomeState {
                 other.isLoadingWarehouses == isLoadingWarehouses) &&
             (identical(other.isLoadingBarcode, isLoadingBarcode) ||
                 other.isLoadingBarcode == isLoadingBarcode) &&
+            (identical(other.isLoadingSales, isLoadingSales) ||
+                other.isLoadingSales == isLoadingSales) &&
             const DeepCollectionEquality().equals(
               other._customers,
               _customers,
@@ -272,6 +311,8 @@ class _$HomeStateImpl implements _HomeState {
             ) &&
             (identical(other.barcodeData, barcodeData) ||
                 other.barcodeData == barcodeData) &&
+            (identical(other.salesResponse, salesResponse) ||
+                other.salesResponse == salesResponse) &&
             (identical(other.error, error) || other.error == error));
   }
 
@@ -281,9 +322,11 @@ class _$HomeStateImpl implements _HomeState {
     isLoadingCustomers,
     isLoadingWarehouses,
     isLoadingBarcode,
+    isLoadingSales,
     const DeepCollectionEquality().hash(_customers),
     const DeepCollectionEquality().hash(_warehouses),
     barcodeData,
+    salesResponse,
     error,
   );
 
@@ -301,9 +344,11 @@ abstract class _HomeState implements HomeState {
     final bool isLoadingCustomers,
     final bool isLoadingWarehouses,
     final bool isLoadingBarcode,
+    final bool isLoadingSales,
     final List<CustomerResponseModel> customers,
     final List<WarehouseResponseModel> warehouses,
     final BarcodeResponseModel? barcodeData,
+    final SalesResponseModel? salesResponse,
     final String? error,
   }) = _$HomeStateImpl;
 
@@ -314,11 +359,15 @@ abstract class _HomeState implements HomeState {
   @override
   bool get isLoadingBarcode;
   @override
+  bool get isLoadingSales;
+  @override
   List<CustomerResponseModel> get customers;
   @override
   List<WarehouseResponseModel> get warehouses;
   @override
   BarcodeResponseModel? get barcodeData;
+  @override
+  SalesResponseModel? get salesResponse;
   @override
   String? get error;
 
