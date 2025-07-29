@@ -14,15 +14,17 @@ class LoginCubit extends Cubit<LoginState> {
     // Emit loading state
     emit(const LoginState.loading());
     final response = await _loginRepo.login(LoginRequestBody(netUser: netsisUser, netPassword: netsisPassword, dbName: dbName, dbUser: dbUser, dbPassword: dbPassword, branchCode: branchCode));
-
+debugPrint('state is $state');
     response.when(
       success: (loginResponse) async {
         await saveUserToken(loginResponse.accessToken);
         // Emit success state with data
         emit(LoginState.success(loginResponse));
+        debugPrint('state is suc $state');
       },
       failure: (errorHandler) {
         emit(LoginState.error(errorHandler.apiErrorModel.message ?? ''));
+        debugPrint('state is err $state');
       },
     );
   }

@@ -19,8 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final _clientController = TextEditingController();
   final _warehouseController = TextEditingController();
 
-  CustomerResponseModel? _selectedCustomer;
-  WarehouseResponseModel? _selectedWarehouse;
+  CustomerResponseModel? selectedCustomer;
+  WarehouseResponseModel? selectedWarehouse;
 
   @override
   void initState() {
@@ -65,11 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (errorMsg != null) {
-            return Center(
-              child: Text(errorMsg!, style: const TextStyle(color: Colors.red)),
-            );
-          }
+
 
           return Padding(
             padding: const EdgeInsets.all(16),
@@ -99,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return ListTile(title: Text(suggestion.clientName));
                   },
                   onSuggestionSelected: (selection) {
-                    _selectedCustomer = selection;
+                    selectedCustomer = selection;
                     _clientController.text = selection.clientName;
                   },
                   noItemsFoundBuilder:
@@ -135,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return ListTile(title: Text(suggestion.warehouse));
                   },
                   onSuggestionSelected: (selection) {
-                    _selectedWarehouse = selection;
+                    selectedWarehouse = selection;
                     _warehouseController.text = selection.warehouse;
                   },
                   noItemsFoundBuilder:

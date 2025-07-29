@@ -9,9 +9,9 @@ part of 'warehouse_response_model.dart';
 WarehouseResponseModel _$WarehouseResponseModelFromJson(
   Map<String, dynamic> json,
 ) => WarehouseResponseModel(
-  disabled: json['disabled'] as bool,
+  disabled: json['disabled'] as String,
   group: json['group'] as String?,
-  selected: json['selected'] as bool,
+  selected: json['selected'] as String,
   warehouse: json['text'] as String,
   value: json['value'] as String,
 );

@@ -3,9 +3,9 @@ part 'warehouse_response_model.g.dart';
 
 @JsonSerializable()
 class WarehouseResponseModel {
-  final bool disabled;
+  final String disabled;
   final String? group;
-  final bool selected;
+  final String selected;
   @JsonKey(name: 'text')
   final String warehouse;
   final String value;

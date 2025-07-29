@@ -14,6 +14,7 @@ class SharedPrefHelper {
     await sharedPreferences.remove(key);
   }
 
+
   /// Removes all keys and values in the SharedPreferences
   static clearAllData() async {
     debugPrint('SharedPrefHelper : all data has been cleared');
@@ -98,5 +99,12 @@ bool isLoggedInUser = false;
 
 class SharedPrefKeys {
   static const String userToken = 'userToken';
+  static const rememberMe     = 'rememberMe';
+  static const netsisUser     = 'netsisUser';
+  static const netsisPassword = 'netsisPassword';
+  static const dbName         = 'dbName';
+  static const dbUser         = 'dbUser';
+  static const dbPassword     = 'dbPassword';
+  static const branchCode     = 'branchCode';
 }
 /// set string key

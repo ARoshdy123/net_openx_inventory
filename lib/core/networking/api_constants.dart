@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const String apiBaseUrl = 'http://192.168.1.207:92/api/';  /// here will add local link
+  static const String apiBaseUrl = 'http://192.168.1.221:92/api/';  /// here will add local link
   static const String loginEndpoint = 'Auth/login';
   static const String barcodeEndpoint = 'Item/api/item/by-barcode=WHP34%2F027.24.00914';
   static const String customerEndpoint = 'Customer/api/customer/list';
