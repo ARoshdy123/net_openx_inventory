@@ -9,9 +9,9 @@ part of 'customer_response_model.dart';
 CustomerResponseModel _$CustomerResponseModelFromJson(
   Map<String, dynamic> json,
 ) => CustomerResponseModel(
-  disabled: json['disabled'] as String,
+  disabled: json['disabled'] as bool,
   group: json['group'] as String?,
-  selected: json['selected'] as String,
+  selected: json['selected'] as bool,
   clientName: json['text'] as String,
   value: json['value'] as String,
 );

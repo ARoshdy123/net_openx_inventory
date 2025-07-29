@@ -11,11 +11,11 @@ abstract class HomeApiServices {
   factory HomeApiServices(Dio dio) = _HomeApiServices;
 
   @GET(ApiConstants.barcodeEndpoint)
-  Future<BarcodeResponseModel> getBarcode(@Query('barcode') String barcode); // here 'barcode' is the query parameter name to search for the barcode
+  Future<BarcodeResponseModel> getBarcode(); // here 'barcode' is the query parameter name to search for the barcode
 
   @GET(ApiConstants.customerEndpoint)
-  Future<CustomerResponseModel> getCustomers();
+  Future<List<CustomerResponseModel>> getCustomers();
 
   @GET(ApiConstants.warehouseEndpoint)
-  Future<WarehouseResponseModel> getWarehouses();
+  Future<List<WarehouseResponseModel>> getWarehouses();
 }

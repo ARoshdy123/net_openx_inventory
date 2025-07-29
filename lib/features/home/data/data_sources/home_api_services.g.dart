@@ -10,7 +10,7 @@ part of 'home_api_services.dart';
 
 class _HomeApiServices implements HomeApiServices {
   _HomeApiServices(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'http://192.168.1.221:92/api/';
+    baseUrl ??= 'http://192.168.1.4:92/api/';
   }
 
   final Dio _dio;
@@ -20,16 +20,16 @@ class _HomeApiServices implements HomeApiServices {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BarcodeResponseModel> getBarcode(String barcode) async {
+  Future<BarcodeResponseModel> getBarcode() async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'barcode': barcode};
+    final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BarcodeResponseModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'Item/api/item/by-barcode=WHP34%2F027.24.00914',
+            'Item/api/item/by-barcode?barcode=WHP34%2F027.24.00914',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -47,12 +47,12 @@ class _HomeApiServices implements HomeApiServices {
   }
 
   @override
-  Future<CustomerResponseModel> getCustomers() async {
+  Future<List<CustomerResponseModel>> getCustomers() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<CustomerResponseModel>(
+    final _options = _setStreamType<List<CustomerResponseModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -62,10 +62,16 @@ class _HomeApiServices implements HomeApiServices {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late CustomerResponseModel _value;
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<CustomerResponseModel> _value;
     try {
-      _value = CustomerResponseModel.fromJson(_result.data!);
+      _value =
+          _result.data!
+              .map(
+                (dynamic i) =>
+                    CustomerResponseModel.fromJson(i as Map<String, dynamic>),
+              )
+              .toList();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -74,12 +80,12 @@ class _HomeApiServices implements HomeApiServices {
   }
 
   @override
-  Future<WarehouseResponseModel> getWarehouses() async {
+  Future<List<WarehouseResponseModel>> getWarehouses() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<WarehouseResponseModel>(
+    final _options = _setStreamType<List<WarehouseResponseModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -89,10 +95,16 @@ class _HomeApiServices implements HomeApiServices {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late WarehouseResponseModel _value;
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<WarehouseResponseModel> _value;
     try {
-      _value = WarehouseResponseModel.fromJson(_result.data!);
+      _value =
+          _result.data!
+              .map(
+                (dynamic i) =>
+                    WarehouseResponseModel.fromJson(i as Map<String, dynamic>),
+              )
+              .toList();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

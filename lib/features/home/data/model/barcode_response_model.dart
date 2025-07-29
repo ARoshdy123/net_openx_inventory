@@ -5,7 +5,7 @@ part 'barcode_response_model.g.dart';
 class BarcodeResponseModel {
   @JsonKey(name: 'stokKodu')
   final String itemCode;
-  @JsonKey(name: 'stockAdi')
+  @JsonKey(name: 'stokAdi')
   final String itemName;
   final int depoKod; //300
   @JsonKey(name: 'balanceQty')

@@ -11,14 +11,14 @@ class HomeRepo {
   HomeRepo(this._homeApiServices);
   Future<ApiResult<BarcodeResponseModel>> getBarcode(String barcode) async {
     try {
-      final response = await _homeApiServices.getBarcode(barcode);
+      final response = await _homeApiServices.getBarcode();
       return ApiResult.success(response);
     } on DioException catch (error) {
       return ApiResult.failure(ErrorHandler.handle(error));
     }
   }
 
-  Future<ApiResult<CustomerResponseModel>> getCustomers() async {
+  Future<ApiResult<List<CustomerResponseModel>>> getCustomers() async {
     try {
       final response = await _homeApiServices.getCustomers();
       return ApiResult.success(response);
@@ -27,7 +27,7 @@ class HomeRepo {
     }
   }
 
-  Future<ApiResult<WarehouseResponseModel>> getWarehouses() async {
+  Future<ApiResult<List<WarehouseResponseModel>>> getWarehouses() async {
     try {
       final response = await _homeApiServices.getWarehouses();
       return ApiResult.success(response);

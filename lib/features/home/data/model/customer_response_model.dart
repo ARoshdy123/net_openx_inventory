@@ -3,9 +3,9 @@ part 'customer_response_model.g.dart';
 
 @JsonSerializable()
 class CustomerResponseModel {
-  final String disabled;
+  final bool disabled;
   final String? group;
-  final String selected;
+  final bool selected;
   @JsonKey(name: 'text')
   final String clientName;
   final String value;

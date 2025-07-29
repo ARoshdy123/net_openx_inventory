@@ -1,217 +1,101 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-class BarcodeScannerPage extends StatelessWidget {
+class BarcodeScannerPage extends StatefulWidget {
   final Function(String) onBarcodeScanned;
 
   const BarcodeScannerPage({super.key, required this.onBarcodeScanned});
 
   @override
+  State<BarcodeScannerPage> createState() => _BarcodeScannerPageState();
+}
+
+class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
+  MobileScannerController cameraController = MobileScannerController();
+  bool _screenOpened = false;
+
+  @override
+  void dispose() {
+    cameraController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Scan Barcode')),
-      body: MobileScanner(
-        onDetect: (barcode) {
-            Navigator.pop(context);
-          }
-
+      appBar: AppBar(
+        title: const Text('Scan Barcode'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.flash_on),
+            onPressed: () {
+              cameraController.toggleTorch();
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.camera_rear),
+            onPressed: () {
+              cameraController.switchCamera();
+            },
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          MobileScanner(
+            controller: cameraController,
+            onDetect: (capture) {
+              if (!_screenOpened) {
+                final List<Barcode> barcodes = capture.barcodes;
+                for (final barcode in barcodes) {
+                  if (barcode.rawValue != null) {
+                    _screenOpened = true;
+                    widget.onBarcodeScanned(barcode.rawValue!);
+                    Navigator.pop(context);
+                    break;
+                  }
+                }
+              }
+            },
+          ),
+          // Overlay for scanner frame
+          Center(
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.red,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          // Instructions
+          Positioned(
+            bottom: 100,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              child: const Text(
+                'Align barcode within the frame to scan',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:mobile_scanner/mobile_scanner.dart';
-//
-// class BarcodeScannerPage extends StatefulWidget {
-//   const BarcodeScannerPage({super.key});
-//
-//   @override
-//   State<BarcodeScannerPage> createState() => _BarcodeScannerPageState();
-// }
-//
-// class _BarcodeScannerPageState extends State<BarcodeScannerPage>
-//     with WidgetsBindingObserver {
-//   late final MobileScannerController _controller;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _controller = MobileScannerController(
-//       detectionSpeed: DetectionSpeed.noDuplicates,
-//       facing: CameraFacing.back,
-//       torchEnabled: false,
-//     );
-//     WidgetsBinding.instance.addObserver(this);
-//   }
-//
-//   @override
-//   void dispose() {
-//     WidgetsBinding.instance.removeObserver(this);
-//     _controller.dispose();
-//     super.dispose();
-//   }
-//
-//   @override
-//   void didChangeAppLifecycleState(AppLifecycleState state) {
-//     if (state == AppLifecycleState.paused) {
-//       _controller.stop();
-//     } else if (state == AppLifecycleState.resumed) {
-//       _controller.start();
-//     }
-//   }
-//
-//   void _onDetect(BarcodeCapture capture) {
-//     final barcode = capture.barcodes.firstOrNull;
-//     if (barcode != null && barcode.rawValue != null) {
-//       _controller.stop();
-//       Navigator.pop(context, barcode.rawValue!);
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Scan Barcode'),
-//         actions: [
-//           IconButton(
-//             icon: const Icon(Icons.flash_on),
-//             onPressed: () => _controller.toggleTorch(),
-//           ),
-//         ],
-//       ),
-//       body: MobileScanner(
-//         controller: _controller,
-//         onDetect: _onDetect,
-//         errorBuilder: (context, error, child) {
-//           return Center(
-//             child: Text(
-//               'Camera error: $error',
-//               style: const TextStyle(color: Colors.red),
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-//
-//
-// /*
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:mobile_scanner/mobile_scanner.dart';
-// import 'package:net_openx_inventory/features/home/logic/home_cubit.dart';
-// import 'package:net_openx_inventory/features/home/logic/home_state.dart';
-//
-// class BarcodeScannerPage extends StatefulWidget {
-//   const BarcodeScannerPage({super.key});
-//
-//   @override
-//   State<BarcodeScannerPage> createState() => _BarcodeScannerPageState();
-// }
-//
-// class _BarcodeScannerPageState extends State<BarcodeScannerPage>
-//     with WidgetsBindingObserver {
-//   late final MobileScannerController _controller;
-//   bool _isProcessing = false;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _controller = MobileScannerController(
-//       detectionSpeed: DetectionSpeed.noDuplicates,
-//       facing: CameraFacing.back,
-//       torchEnabled: false,
-//     );
-//     WidgetsBinding.instance.addObserver(this);
-//   }
-//
-//   @override
-//   void dispose() {
-//     WidgetsBinding.instance.removeObserver(this);
-//     _controller.dispose();
-//     super.dispose();
-//   }
-//
-//   @override
-//   void didChangeAppLifecycleState(AppLifecycleState state) {
-//     if (state == AppLifecycleState.paused) {
-//       _controller.stop();
-//     } else if (state == AppLifecycleState.resumed) {
-//       _controller.start();
-//     }
-//   }
-//
-//   void _onDetect(BarcodeCapture capture) {
-//     final barcode = capture.barcodes.firstOrNull;
-//     if (barcode != null && barcode.rawValue != null && !_isProcessing) {
-//       setState(() => _isProcessing = true);
-//       _controller.stop();
-//       // Call the cubit to process the barcode
-//       context.read<HomeCubit>().getBarcode(barcode.rawValue!);
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocListener<HomeCubit, HomeState>(
-//       listener: (context, state) {
-//         if (state is BarcodeLoaded) {
-//           // Success: pop with data or handle as needed
-//           Navigator.pop(context, state.data);
-//         } else if (state is Error) {
-//           // Show error and allow retry
-//           setState(() => _isProcessing = false);
-//           ScaffoldMessenger.of(context).showSnackBar(
-//             SnackBar(content: Text(state.message)),
-//           );
-//           _controller.start();
-//         }
-//       },
-//       child: Scaffold(
-//         appBar: AppBar(
-//           title: const Text('Scan Barcode'),
-//           actions: [
-//             IconButton(
-//               icon: const Icon(Icons.flash_on),
-//               onPressed: () => _controller.toggleTorch(),
-//             ),
-//           ],
-//         ),
-//         body: Stack(
-//           children: [
-//             MobileScanner(
-//               controller: _controller,
-//               onDetect: _onDetect,
-//               errorBuilder: (context, error, child) {
-//                 return Center(
-//                   child: Text(
-//                     'Camera error: $error',
-//                     style: const TextStyle(color: Colors.red),
-//                   ),
-//                 );
-//               },
-//             ),
-//             BlocBuilder<HomeCubit, HomeState>(
-//               builder: (context, state) {
-//                 if (state is Loading) {
-//                   return Container(
-//                     color: Colors.black45,
-//                     child: const Center(
-//                       child: CircularProgressIndicator(),
-//                     ),
-//                   );
-//                 }
-//                 return const SizedBox.shrink();
-//               },
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// } */

@@ -17,68 +17,37 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$HomeState {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(BarcodeResponseModel data) barcodeLoaded,
-    required TResult Function(CustomerResponseModel data) customerLoaded,
-    required TResult Function(WarehouseResponseModel data) warehouseLoaded,
-    required TResult Function(String message) error,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult? Function(CustomerResponseModel data)? customerLoaded,
-    TResult? Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult? Function(String message)? error,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult Function(CustomerResponseModel data)? customerLoaded,
-    TResult Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult Function(String message)? error,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(Loading value) loading,
-    required TResult Function(BarcodeLoaded value) barcodeLoaded,
-    required TResult Function(CustomerLoaded value) customerLoaded,
-    required TResult Function(WarehouseLoaded value) warehouseLoaded,
-    required TResult Function(Error value) error,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(Loading value)? loading,
-    TResult? Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult? Function(CustomerLoaded value)? customerLoaded,
-    TResult? Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult? Function(Error value)? error,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(Loading value)? loading,
-    TResult Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult Function(CustomerLoaded value)? customerLoaded,
-    TResult Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult Function(Error value)? error,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
+  bool get isLoadingCustomers => throw _privateConstructorUsedError;
+  bool get isLoadingWarehouses => throw _privateConstructorUsedError;
+  bool get isLoadingBarcode => throw _privateConstructorUsedError;
+  List<CustomerResponseModel> get customers =>
+      throw _privateConstructorUsedError;
+  List<WarehouseResponseModel> get warehouses =>
+      throw _privateConstructorUsedError;
+  BarcodeResponseModel? get barcodeData => throw _privateConstructorUsedError;
+  String? get error => throw _privateConstructorUsedError;
+
+  /// Create a copy of HomeState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $HomeStateCopyWith<HomeState> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $HomeStateCopyWith<$Res> {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) then) =
       _$HomeStateCopyWithImpl<$Res, HomeState>;
+  @useResult
+  $Res call({
+    bool isLoadingCustomers,
+    bool isLoadingWarehouses,
+    bool isLoadingBarcode,
+    List<CustomerResponseModel> customers,
+    List<WarehouseResponseModel> warehouses,
+    BarcodeResponseModel? barcodeData,
+    String? error,
+  });
 }
 
 /// @nodoc
@@ -93,300 +62,139 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? isLoadingCustomers = null,
+    Object? isLoadingWarehouses = null,
+    Object? isLoadingBarcode = null,
+    Object? customers = null,
+    Object? warehouses = null,
+    Object? barcodeData = freezed,
+    Object? error = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            isLoadingCustomers:
+                null == isLoadingCustomers
+                    ? _value.isLoadingCustomers
+                    : isLoadingCustomers // ignore: cast_nullable_to_non_nullable
+                        as bool,
+            isLoadingWarehouses:
+                null == isLoadingWarehouses
+                    ? _value.isLoadingWarehouses
+                    : isLoadingWarehouses // ignore: cast_nullable_to_non_nullable
+                        as bool,
+            isLoadingBarcode:
+                null == isLoadingBarcode
+                    ? _value.isLoadingBarcode
+                    : isLoadingBarcode // ignore: cast_nullable_to_non_nullable
+                        as bool,
+            customers:
+                null == customers
+                    ? _value.customers
+                    : customers // ignore: cast_nullable_to_non_nullable
+                        as List<CustomerResponseModel>,
+            warehouses:
+                null == warehouses
+                    ? _value.warehouses
+                    : warehouses // ignore: cast_nullable_to_non_nullable
+                        as List<WarehouseResponseModel>,
+            barcodeData:
+                freezed == barcodeData
+                    ? _value.barcodeData
+                    : barcodeData // ignore: cast_nullable_to_non_nullable
+                        as BarcodeResponseModel?,
+            error:
+                freezed == error
+                    ? _value.error
+                    : error // ignore: cast_nullable_to_non_nullable
+                        as String?,
+          )
+          as $Val,
+    );
+  }
 }
 
 /// @nodoc
-abstract class _$$InitialImplCopyWith<$Res> {
-  factory _$$InitialImplCopyWith(
-    _$InitialImpl value,
-    $Res Function(_$InitialImpl) then,
-  ) = __$$InitialImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$InitialImplCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$InitialImpl>
-    implements _$$InitialImplCopyWith<$Res> {
-  __$$InitialImplCopyWithImpl(
-    _$InitialImpl _value,
-    $Res Function(_$InitialImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$InitialImpl implements _Initial {
-  const _$InitialImpl();
-
+abstract class _$$HomeStateImplCopyWith<$Res>
+    implements $HomeStateCopyWith<$Res> {
+  factory _$$HomeStateImplCopyWith(
+    _$HomeStateImpl value,
+    $Res Function(_$HomeStateImpl) then,
+  ) = __$$HomeStateImplCopyWithImpl<$Res>;
   @override
-  String toString() {
-    return 'HomeState.initial()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$InitialImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(BarcodeResponseModel data) barcodeLoaded,
-    required TResult Function(CustomerResponseModel data) customerLoaded,
-    required TResult Function(WarehouseResponseModel data) warehouseLoaded,
-    required TResult Function(String message) error,
-  }) {
-    return initial();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult? Function(CustomerResponseModel data)? customerLoaded,
-    TResult? Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult? Function(String message)? error,
-  }) {
-    return initial?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult Function(CustomerResponseModel data)? customerLoaded,
-    TResult Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult Function(String message)? error,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(Loading value) loading,
-    required TResult Function(BarcodeLoaded value) barcodeLoaded,
-    required TResult Function(CustomerLoaded value) customerLoaded,
-    required TResult Function(WarehouseLoaded value) warehouseLoaded,
-    required TResult Function(Error value) error,
-  }) {
-    return initial(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(Loading value)? loading,
-    TResult? Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult? Function(CustomerLoaded value)? customerLoaded,
-    TResult? Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult? Function(Error value)? error,
-  }) {
-    return initial?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(Loading value)? loading,
-    TResult Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult Function(CustomerLoaded value)? customerLoaded,
-    TResult Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult Function(Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _Initial implements HomeState {
-  const factory _Initial() = _$InitialImpl;
-}
-
-/// @nodoc
-abstract class _$$LoadingImplCopyWith<$Res> {
-  factory _$$LoadingImplCopyWith(
-    _$LoadingImpl value,
-    $Res Function(_$LoadingImpl) then,
-  ) = __$$LoadingImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$LoadingImplCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$LoadingImpl>
-    implements _$$LoadingImplCopyWith<$Res> {
-  __$$LoadingImplCopyWithImpl(
-    _$LoadingImpl _value,
-    $Res Function(_$LoadingImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$LoadingImpl implements Loading {
-  const _$LoadingImpl();
-
-  @override
-  String toString() {
-    return 'HomeState.loading()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoadingImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(BarcodeResponseModel data) barcodeLoaded,
-    required TResult Function(CustomerResponseModel data) customerLoaded,
-    required TResult Function(WarehouseResponseModel data) warehouseLoaded,
-    required TResult Function(String message) error,
-  }) {
-    return loading();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult? Function(CustomerResponseModel data)? customerLoaded,
-    TResult? Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult? Function(String message)? error,
-  }) {
-    return loading?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult Function(CustomerResponseModel data)? customerLoaded,
-    TResult Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult Function(String message)? error,
-    required TResult orElse(),
-  }) {
-    if (loading != null) {
-      return loading();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(Loading value) loading,
-    required TResult Function(BarcodeLoaded value) barcodeLoaded,
-    required TResult Function(CustomerLoaded value) customerLoaded,
-    required TResult Function(WarehouseLoaded value) warehouseLoaded,
-    required TResult Function(Error value) error,
-  }) {
-    return loading(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(Loading value)? loading,
-    TResult? Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult? Function(CustomerLoaded value)? customerLoaded,
-    TResult? Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult? Function(Error value)? error,
-  }) {
-    return loading?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(Loading value)? loading,
-    TResult Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult Function(CustomerLoaded value)? customerLoaded,
-    TResult Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult Function(Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (loading != null) {
-      return loading(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class Loading implements HomeState {
-  const factory Loading() = _$LoadingImpl;
-}
-
-/// @nodoc
-abstract class _$$BarcodeLoadedImplCopyWith<$Res> {
-  factory _$$BarcodeLoadedImplCopyWith(
-    _$BarcodeLoadedImpl value,
-    $Res Function(_$BarcodeLoadedImpl) then,
-  ) = __$$BarcodeLoadedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({BarcodeResponseModel data});
+  $Res call({
+    bool isLoadingCustomers,
+    bool isLoadingWarehouses,
+    bool isLoadingBarcode,
+    List<CustomerResponseModel> customers,
+    List<WarehouseResponseModel> warehouses,
+    BarcodeResponseModel? barcodeData,
+    String? error,
+  });
 }
 
 /// @nodoc
-class __$$BarcodeLoadedImplCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$BarcodeLoadedImpl>
-    implements _$$BarcodeLoadedImplCopyWith<$Res> {
-  __$$BarcodeLoadedImplCopyWithImpl(
-    _$BarcodeLoadedImpl _value,
-    $Res Function(_$BarcodeLoadedImpl) _then,
+class __$$HomeStateImplCopyWithImpl<$Res>
+    extends _$HomeStateCopyWithImpl<$Res, _$HomeStateImpl>
+    implements _$$HomeStateImplCopyWith<$Res> {
+  __$$HomeStateImplCopyWithImpl(
+    _$HomeStateImpl _value,
+    $Res Function(_$HomeStateImpl) _then,
   ) : super(_value, _then);
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? data = null}) {
+  $Res call({
+    Object? isLoadingCustomers = null,
+    Object? isLoadingWarehouses = null,
+    Object? isLoadingBarcode = null,
+    Object? customers = null,
+    Object? warehouses = null,
+    Object? barcodeData = freezed,
+    Object? error = freezed,
+  }) {
     return _then(
-      _$BarcodeLoadedImpl(
-        null == data
-            ? _value.data
-            : data // ignore: cast_nullable_to_non_nullable
-                as BarcodeResponseModel,
+      _$HomeStateImpl(
+        isLoadingCustomers:
+            null == isLoadingCustomers
+                ? _value.isLoadingCustomers
+                : isLoadingCustomers // ignore: cast_nullable_to_non_nullable
+                    as bool,
+        isLoadingWarehouses:
+            null == isLoadingWarehouses
+                ? _value.isLoadingWarehouses
+                : isLoadingWarehouses // ignore: cast_nullable_to_non_nullable
+                    as bool,
+        isLoadingBarcode:
+            null == isLoadingBarcode
+                ? _value.isLoadingBarcode
+                : isLoadingBarcode // ignore: cast_nullable_to_non_nullable
+                    as bool,
+        customers:
+            null == customers
+                ? _value._customers
+                : customers // ignore: cast_nullable_to_non_nullable
+                    as List<CustomerResponseModel>,
+        warehouses:
+            null == warehouses
+                ? _value._warehouses
+                : warehouses // ignore: cast_nullable_to_non_nullable
+                    as List<WarehouseResponseModel>,
+        barcodeData:
+            freezed == barcodeData
+                ? _value.barcodeData
+                : barcodeData // ignore: cast_nullable_to_non_nullable
+                    as BarcodeResponseModel?,
+        error:
+            freezed == error
+                ? _value.error
+                : error // ignore: cast_nullable_to_non_nullable
+                    as String?,
       ),
     );
   }
@@ -394,638 +202,130 @@ class __$$BarcodeLoadedImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$BarcodeLoadedImpl implements BarcodeLoaded {
-  const _$BarcodeLoadedImpl(this.data);
+class _$HomeStateImpl implements _HomeState {
+  const _$HomeStateImpl({
+    this.isLoadingCustomers = false,
+    this.isLoadingWarehouses = false,
+    this.isLoadingBarcode = false,
+    final List<CustomerResponseModel> customers = const [],
+    final List<WarehouseResponseModel> warehouses = const [],
+    this.barcodeData,
+    this.error,
+  }) : _customers = customers,
+       _warehouses = warehouses;
 
   @override
-  final BarcodeResponseModel data;
+  @JsonKey()
+  final bool isLoadingCustomers;
+  @override
+  @JsonKey()
+  final bool isLoadingWarehouses;
+  @override
+  @JsonKey()
+  final bool isLoadingBarcode;
+  final List<CustomerResponseModel> _customers;
+  @override
+  @JsonKey()
+  List<CustomerResponseModel> get customers {
+    if (_customers is EqualUnmodifiableListView) return _customers;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_customers);
+  }
+
+  final List<WarehouseResponseModel> _warehouses;
+  @override
+  @JsonKey()
+  List<WarehouseResponseModel> get warehouses {
+    if (_warehouses is EqualUnmodifiableListView) return _warehouses;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_warehouses);
+  }
+
+  @override
+  final BarcodeResponseModel? barcodeData;
+  @override
+  final String? error;
 
   @override
   String toString() {
-    return 'HomeState.barcodeLoaded(data: $data)';
+    return 'HomeState(isLoadingCustomers: $isLoadingCustomers, isLoadingWarehouses: $isLoadingWarehouses, isLoadingBarcode: $isLoadingBarcode, customers: $customers, warehouses: $warehouses, barcodeData: $barcodeData, error: $error)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$BarcodeLoadedImpl &&
-            (identical(other.data, data) || other.data == data));
+            other is _$HomeStateImpl &&
+            (identical(other.isLoadingCustomers, isLoadingCustomers) ||
+                other.isLoadingCustomers == isLoadingCustomers) &&
+            (identical(other.isLoadingWarehouses, isLoadingWarehouses) ||
+                other.isLoadingWarehouses == isLoadingWarehouses) &&
+            (identical(other.isLoadingBarcode, isLoadingBarcode) ||
+                other.isLoadingBarcode == isLoadingBarcode) &&
+            const DeepCollectionEquality().equals(
+              other._customers,
+              _customers,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._warehouses,
+              _warehouses,
+            ) &&
+            (identical(other.barcodeData, barcodeData) ||
+                other.barcodeData == barcodeData) &&
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, data);
+  int get hashCode => Object.hash(
+    runtimeType,
+    isLoadingCustomers,
+    isLoadingWarehouses,
+    isLoadingBarcode,
+    const DeepCollectionEquality().hash(_customers),
+    const DeepCollectionEquality().hash(_warehouses),
+    barcodeData,
+    error,
+  );
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$BarcodeLoadedImplCopyWith<_$BarcodeLoadedImpl> get copyWith =>
-      __$$BarcodeLoadedImplCopyWithImpl<_$BarcodeLoadedImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(BarcodeResponseModel data) barcodeLoaded,
-    required TResult Function(CustomerResponseModel data) customerLoaded,
-    required TResult Function(WarehouseResponseModel data) warehouseLoaded,
-    required TResult Function(String message) error,
-  }) {
-    return barcodeLoaded(data);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult? Function(CustomerResponseModel data)? customerLoaded,
-    TResult? Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult? Function(String message)? error,
-  }) {
-    return barcodeLoaded?.call(data);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult Function(CustomerResponseModel data)? customerLoaded,
-    TResult Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult Function(String message)? error,
-    required TResult orElse(),
-  }) {
-    if (barcodeLoaded != null) {
-      return barcodeLoaded(data);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(Loading value) loading,
-    required TResult Function(BarcodeLoaded value) barcodeLoaded,
-    required TResult Function(CustomerLoaded value) customerLoaded,
-    required TResult Function(WarehouseLoaded value) warehouseLoaded,
-    required TResult Function(Error value) error,
-  }) {
-    return barcodeLoaded(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(Loading value)? loading,
-    TResult? Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult? Function(CustomerLoaded value)? customerLoaded,
-    TResult? Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult? Function(Error value)? error,
-  }) {
-    return barcodeLoaded?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(Loading value)? loading,
-    TResult Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult Function(CustomerLoaded value)? customerLoaded,
-    TResult Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult Function(Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (barcodeLoaded != null) {
-      return barcodeLoaded(this);
-    }
-    return orElse();
-  }
+  _$$HomeStateImplCopyWith<_$HomeStateImpl> get copyWith =>
+      __$$HomeStateImplCopyWithImpl<_$HomeStateImpl>(this, _$identity);
 }
 
-abstract class BarcodeLoaded implements HomeState {
-  const factory BarcodeLoaded(final BarcodeResponseModel data) =
-      _$BarcodeLoadedImpl;
+abstract class _HomeState implements HomeState {
+  const factory _HomeState({
+    final bool isLoadingCustomers,
+    final bool isLoadingWarehouses,
+    final bool isLoadingBarcode,
+    final List<CustomerResponseModel> customers,
+    final List<WarehouseResponseModel> warehouses,
+    final BarcodeResponseModel? barcodeData,
+    final String? error,
+  }) = _$HomeStateImpl;
 
-  BarcodeResponseModel get data;
+  @override
+  bool get isLoadingCustomers;
+  @override
+  bool get isLoadingWarehouses;
+  @override
+  bool get isLoadingBarcode;
+  @override
+  List<CustomerResponseModel> get customers;
+  @override
+  List<WarehouseResponseModel> get warehouses;
+  @override
+  BarcodeResponseModel? get barcodeData;
+  @override
+  String? get error;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$BarcodeLoadedImplCopyWith<_$BarcodeLoadedImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$CustomerLoadedImplCopyWith<$Res> {
-  factory _$$CustomerLoadedImplCopyWith(
-    _$CustomerLoadedImpl value,
-    $Res Function(_$CustomerLoadedImpl) then,
-  ) = __$$CustomerLoadedImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({CustomerResponseModel data});
-}
-
-/// @nodoc
-class __$$CustomerLoadedImplCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$CustomerLoadedImpl>
-    implements _$$CustomerLoadedImplCopyWith<$Res> {
-  __$$CustomerLoadedImplCopyWithImpl(
-    _$CustomerLoadedImpl _value,
-    $Res Function(_$CustomerLoadedImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? data = null}) {
-    return _then(
-      _$CustomerLoadedImpl(
-        null == data
-            ? _value.data
-            : data // ignore: cast_nullable_to_non_nullable
-                as CustomerResponseModel,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _$CustomerLoadedImpl implements CustomerLoaded {
-  const _$CustomerLoadedImpl(this.data);
-
-  @override
-  final CustomerResponseModel data;
-
-  @override
-  String toString() {
-    return 'HomeState.customerLoaded(data: $data)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CustomerLoadedImpl &&
-            (identical(other.data, data) || other.data == data));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, data);
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CustomerLoadedImplCopyWith<_$CustomerLoadedImpl> get copyWith =>
-      __$$CustomerLoadedImplCopyWithImpl<_$CustomerLoadedImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(BarcodeResponseModel data) barcodeLoaded,
-    required TResult Function(CustomerResponseModel data) customerLoaded,
-    required TResult Function(WarehouseResponseModel data) warehouseLoaded,
-    required TResult Function(String message) error,
-  }) {
-    return customerLoaded(data);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult? Function(CustomerResponseModel data)? customerLoaded,
-    TResult? Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult? Function(String message)? error,
-  }) {
-    return customerLoaded?.call(data);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult Function(CustomerResponseModel data)? customerLoaded,
-    TResult Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult Function(String message)? error,
-    required TResult orElse(),
-  }) {
-    if (customerLoaded != null) {
-      return customerLoaded(data);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(Loading value) loading,
-    required TResult Function(BarcodeLoaded value) barcodeLoaded,
-    required TResult Function(CustomerLoaded value) customerLoaded,
-    required TResult Function(WarehouseLoaded value) warehouseLoaded,
-    required TResult Function(Error value) error,
-  }) {
-    return customerLoaded(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(Loading value)? loading,
-    TResult? Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult? Function(CustomerLoaded value)? customerLoaded,
-    TResult? Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult? Function(Error value)? error,
-  }) {
-    return customerLoaded?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(Loading value)? loading,
-    TResult Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult Function(CustomerLoaded value)? customerLoaded,
-    TResult Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult Function(Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (customerLoaded != null) {
-      return customerLoaded(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class CustomerLoaded implements HomeState {
-  const factory CustomerLoaded(final CustomerResponseModel data) =
-      _$CustomerLoadedImpl;
-
-  CustomerResponseModel get data;
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CustomerLoadedImplCopyWith<_$CustomerLoadedImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$WarehouseLoadedImplCopyWith<$Res> {
-  factory _$$WarehouseLoadedImplCopyWith(
-    _$WarehouseLoadedImpl value,
-    $Res Function(_$WarehouseLoadedImpl) then,
-  ) = __$$WarehouseLoadedImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({WarehouseResponseModel data});
-}
-
-/// @nodoc
-class __$$WarehouseLoadedImplCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$WarehouseLoadedImpl>
-    implements _$$WarehouseLoadedImplCopyWith<$Res> {
-  __$$WarehouseLoadedImplCopyWithImpl(
-    _$WarehouseLoadedImpl _value,
-    $Res Function(_$WarehouseLoadedImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? data = null}) {
-    return _then(
-      _$WarehouseLoadedImpl(
-        null == data
-            ? _value.data
-            : data // ignore: cast_nullable_to_non_nullable
-                as WarehouseResponseModel,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _$WarehouseLoadedImpl implements WarehouseLoaded {
-  const _$WarehouseLoadedImpl(this.data);
-
-  @override
-  final WarehouseResponseModel data;
-
-  @override
-  String toString() {
-    return 'HomeState.warehouseLoaded(data: $data)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WarehouseLoadedImpl &&
-            (identical(other.data, data) || other.data == data));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, data);
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WarehouseLoadedImplCopyWith<_$WarehouseLoadedImpl> get copyWith =>
-      __$$WarehouseLoadedImplCopyWithImpl<_$WarehouseLoadedImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(BarcodeResponseModel data) barcodeLoaded,
-    required TResult Function(CustomerResponseModel data) customerLoaded,
-    required TResult Function(WarehouseResponseModel data) warehouseLoaded,
-    required TResult Function(String message) error,
-  }) {
-    return warehouseLoaded(data);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult? Function(CustomerResponseModel data)? customerLoaded,
-    TResult? Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult? Function(String message)? error,
-  }) {
-    return warehouseLoaded?.call(data);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult Function(CustomerResponseModel data)? customerLoaded,
-    TResult Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult Function(String message)? error,
-    required TResult orElse(),
-  }) {
-    if (warehouseLoaded != null) {
-      return warehouseLoaded(data);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(Loading value) loading,
-    required TResult Function(BarcodeLoaded value) barcodeLoaded,
-    required TResult Function(CustomerLoaded value) customerLoaded,
-    required TResult Function(WarehouseLoaded value) warehouseLoaded,
-    required TResult Function(Error value) error,
-  }) {
-    return warehouseLoaded(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(Loading value)? loading,
-    TResult? Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult? Function(CustomerLoaded value)? customerLoaded,
-    TResult? Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult? Function(Error value)? error,
-  }) {
-    return warehouseLoaded?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(Loading value)? loading,
-    TResult Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult Function(CustomerLoaded value)? customerLoaded,
-    TResult Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult Function(Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (warehouseLoaded != null) {
-      return warehouseLoaded(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class WarehouseLoaded implements HomeState {
-  const factory WarehouseLoaded(final WarehouseResponseModel data) =
-      _$WarehouseLoadedImpl;
-
-  WarehouseResponseModel get data;
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WarehouseLoadedImplCopyWith<_$WarehouseLoadedImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$ErrorImplCopyWith<$Res> {
-  factory _$$ErrorImplCopyWith(
-    _$ErrorImpl value,
-    $Res Function(_$ErrorImpl) then,
-  ) = __$$ErrorImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String message});
-}
-
-/// @nodoc
-class __$$ErrorImplCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$ErrorImpl>
-    implements _$$ErrorImplCopyWith<$Res> {
-  __$$ErrorImplCopyWithImpl(
-    _$ErrorImpl _value,
-    $Res Function(_$ErrorImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? message = null}) {
-    return _then(
-      _$ErrorImpl(
-        null == message
-            ? _value.message
-            : message // ignore: cast_nullable_to_non_nullable
-                as String,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _$ErrorImpl implements Error {
-  const _$ErrorImpl(this.message);
-
-  @override
-  final String message;
-
-  @override
-  String toString() {
-    return 'HomeState.error(message: $message)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ErrorImpl &&
-            (identical(other.message, message) || other.message == message));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, message);
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
-      __$$ErrorImplCopyWithImpl<_$ErrorImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(BarcodeResponseModel data) barcodeLoaded,
-    required TResult Function(CustomerResponseModel data) customerLoaded,
-    required TResult Function(WarehouseResponseModel data) warehouseLoaded,
-    required TResult Function(String message) error,
-  }) {
-    return error(message);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult? Function(CustomerResponseModel data)? customerLoaded,
-    TResult? Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult? Function(String message)? error,
-  }) {
-    return error?.call(message);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(BarcodeResponseModel data)? barcodeLoaded,
-    TResult Function(CustomerResponseModel data)? customerLoaded,
-    TResult Function(WarehouseResponseModel data)? warehouseLoaded,
-    TResult Function(String message)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(message);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Initial value) initial,
-    required TResult Function(Loading value) loading,
-    required TResult Function(BarcodeLoaded value) barcodeLoaded,
-    required TResult Function(CustomerLoaded value) customerLoaded,
-    required TResult Function(WarehouseLoaded value) warehouseLoaded,
-    required TResult Function(Error value) error,
-  }) {
-    return error(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial value)? initial,
-    TResult? Function(Loading value)? loading,
-    TResult? Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult? Function(CustomerLoaded value)? customerLoaded,
-    TResult? Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult? Function(Error value)? error,
-  }) {
-    return error?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial value)? initial,
-    TResult Function(Loading value)? loading,
-    TResult Function(BarcodeLoaded value)? barcodeLoaded,
-    TResult Function(CustomerLoaded value)? customerLoaded,
-    TResult Function(WarehouseLoaded value)? warehouseLoaded,
-    TResult Function(Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class Error implements HomeState {
-  const factory Error(final String message) = _$ErrorImpl;
-
-  String get message;
-
-  /// Create a copy of HomeState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
+  _$$HomeStateImplCopyWith<_$HomeStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

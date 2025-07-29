@@ -10,7 +10,7 @@ BarcodeResponseModel _$BarcodeResponseModelFromJson(
   Map<String, dynamic> json,
 ) => BarcodeResponseModel(
   itemCode: json['stokKodu'] as String,
-  itemName: json['stockAdi'] as String,
+  itemName: json['stokAdi'] as String,
   depoKod: (json['depoKod'] as num).toInt(),
   balanceQuantity: (json['balanceQty'] as num).toDouble(),
   unit: json['olcuBr1'] as String,
@@ -22,7 +22,7 @@ Map<String, dynamic> _$BarcodeResponseModelToJson(
   BarcodeResponseModel instance,
 ) => <String, dynamic>{
   'stokKodu': instance.itemCode,
-  'stockAdi': instance.itemName,
+  'stokAdi': instance.itemName,
   'depoKod': instance.depoKod,
   'balanceQty': instance.balanceQuantity,
   'olcuBr1': instance.unit,
