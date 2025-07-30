@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:drop_down_search_field/drop_down_search_field.dart';
+import 'package:net_openx_inventory/core/helpers/shared_pref_helper.dart';
 import 'package:net_openx_inventory/features/home/data/model/customer_response_model.dart';
 import 'package:net_openx_inventory/features/home/data/model/sales_request_model.dart';
 import 'package:net_openx_inventory/features/home/data/model/warehouse_response_model.dart';
@@ -860,61 +861,56 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _submitInventoryData() {
+  void _submitInventoryData() async {
+    try {
+      // Get the user token from secure storage
+      final userToken = await SharedPrefHelper.getSecuredString(SharedPrefKeys.userToken);
+      debugPrint('the sent token roshdy: $userToken');
 
-    // Create detail lines from scanned items
-    final List<DetailLine> detailLines = scannedItems.map((item) {
-      return DetailLine(
-        stokKodu: item.itemCode,
-        sfraGcmik: 0, // Always 0 as specified
-        sfraBf: 0, // Always 0 as specified
-        depoKodu: int.parse(selectedWarehouse!.value), // warehouse value
-        toDepoKodu: int.parse(selectedWarehouse!.value), // warehouse value
-        seriNo: item.serialNumber,
-        serialQty: item.serialQuantity.toInt(), // Convert to int if needed
-      );
-    }).toList();
-
-    // Create the sales request model
-    final salesRequest = SalesRequestModel(
-      cariKod: selectedCustomer!.value.toString(), // Customer code
-      tarih: DateTime.now().toIso8601String(), // Current date/time
-      detaillines: detailLines,
-    );
-
-    // Submit through Cubit
-    context.read<HomeCubit>().createSales(salesRequest);
-
-    // Show success dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        icon: const Icon(Icons.check_circle, color: Colors.green, size: 64),
-        title: const Text('Success!'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Inventory data submitted successfully!'),
-            const SizedBox(height: 16),
-            Text(
-              '${scannedItems.length} items submitted',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // Clear the form after successful submission
-              _clearForm();
-            },
-            child: const Text('OK'),
+      if (userToken.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Authentication token not found. Please login again.'),
+            backgroundColor: Colors.red,
           ),
-        ],
-      ),
-    );
+        );
+        return;
+      }
+
+      // Create detail lines from scanned items
+      final List<DetailLine> detailLines = scannedItems.map((item) {
+        return DetailLine(
+          stokKodu: item.itemCode,
+          sTraGcmik: 0, // Always 0 as specified
+          sTraBf: 0, // Always 0 as specified
+          depoKodu: int.parse(selectedWarehouse!.value), // warehouse value
+          toDepoKodu: int.parse(selectedWarehouse!.value), // warehouse value
+          seriNo: item.serialNumber,
+          serialQty: item.serialQuantity, // Keep as double to match API
+        );
+      }).toList();
+
+      // Create the sales request model with token
+      final salesRequest = SalesRequestModel(
+        cariKod: selectedCustomer!.value.toString(), // Customer code
+        tarih: DateTime.now().toIso8601String(), // Current date/time
+        detailLines: detailLines,
+        // Changed from detaillines to detailLines
+        token: userToken, // Add the user token
+      );
+      debugPrint('the sent token roshdy: $userToken');
+
+      // Submit through Cubit - success/error handling is done in BlocConsumer listener
+      context.read<HomeCubit>().createSales(salesRequest);
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error preparing data: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void _clearForm() {

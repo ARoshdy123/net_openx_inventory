@@ -6,12 +6,14 @@ part 'sales_request_model.g.dart';
 class SalesRequestModel {
   final String cariKod;
   final String tarih;
-  final List<DetailLine> detaillines;
+  final List<DetailLine> detailLines; // Changed from detaillines to detailLines to match API
+  final String token; // Added token field
 
   SalesRequestModel({
     required this.cariKod,
     required this.tarih,
-    required this.detaillines,
+    required this.detailLines,
+    required this.token,
   });
 
   factory SalesRequestModel.fromJson(Map<String, dynamic> json) =>
@@ -23,21 +25,21 @@ class SalesRequestModel {
 @JsonSerializable()
 class DetailLine {
   final String stokKodu; //itemCode
-  @JsonKey(name: 'sfra_GCMIK') // 0
-  final int sfraGcmik;
-  @JsonKey(name: 'sfra_BF') // 0
-  final int sfraBf;
-  @JsonKey(name: 'depo_KODU') // warehouse value
+  @JsonKey(name: 'sTra_GCMIK') // Changed to match API format
+  final int sTraGcmik;
+  @JsonKey(name: 'sTra_BF') // Changed to match API format
+  final int sTraBf;
+  @JsonKey(name: 'depO_KODU') // Changed to match API format
   final int depoKodu;
-  @JsonKey(name: 'tO_DEPO_KODU') //warehouse value
+  @JsonKey(name: 'tO_DEPO_KODU') // Changed to match API format
   final int toDepoKodu;
   final String seriNo;  // serial number of the table
-  final int serialQty;
+  final double serialQty;  // serial quantity (changed to double to match API)
 
   DetailLine({
     required this.stokKodu,
-    required this.sfraGcmik,
-    required this.sfraBf,
+    required this.sTraGcmik,
+    required this.sTraBf,
     required this.depoKodu,
     required this.toDepoKodu,
     required this.seriNo,
