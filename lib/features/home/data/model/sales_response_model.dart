@@ -4,16 +4,11 @@ part 'sales_response_model.g.dart';
 
 @JsonSerializable()
 class SalesResponseModel {
-  final bool? success;
-  final String? message;
-  final int? statusCode;
-  final dynamic data;
 
-  SalesResponseModel({
-    this.success,
-    this.message,
-    this.statusCode,
-    this.data,
+  final String? message;
+  final String evrakNo;
+
+  SalesResponseModel({required this.evrakNo, this.message
   });
 
   factory SalesResponseModel.fromJson(Map<String, dynamic> json) =>

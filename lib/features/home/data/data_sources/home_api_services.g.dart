@@ -10,7 +10,7 @@ part of 'home_api_services.dart';
 
 class _HomeApiServices implements HomeApiServices {
   _HomeApiServices(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'http://192.168.1.4:92/api/';
+    baseUrl ??= 'http://192.168.1.160:92/api/';
   }
 
   final Dio _dio;
@@ -29,7 +29,7 @@ class _HomeApiServices implements HomeApiServices {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'Item/api/item/by-barcode?barcode=WHP34%2F027.24.00914',
+            'Item/api/item/by-barcode?barcode=WHP34%2F027.24.00917',
             queryParameters: queryParameters,
             data: _data,
           )

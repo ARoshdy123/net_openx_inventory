@@ -11,19 +11,17 @@ import 'package:net_openx_inventory/features/login/logic/cubit/login_cubit.dart'
 final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
-  // Dio & ApiService
+  // Dio & ApiService - Register Dio as singleton first
   Dio dio = DioFactory.getDio();
-  // Register Dio  one instance
-  getIt.registerLazySingleton<LoginApiService>(() => LoginApiService(dio));
+  getIt.registerLazySingleton<Dio>(() => dio);
 
-  //login
-  getIt.registerLazySingleton<LoginRepo>(() => LoginRepo(getIt()));
-  getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt()));
+  // Login services
+  getIt.registerLazySingleton<LoginApiService>(() => LoginApiService(getIt<Dio>()));
+  getIt.registerLazySingleton<LoginRepo>(() => LoginRepo(getIt<LoginApiService>()));
+  getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginRepo>()));
 
-  //home
-  getIt.registerLazySingleton(() => HomeApiServices(dio));
-  getIt.registerLazySingleton(() => HomeRepo(getIt()));
-  getIt.registerLazySingleton(() => HomeCubit(getIt()));
-
-
+  // Home services - CHANGED: Use factory for HomeCubit to avoid state issues
+  getIt.registerLazySingleton<HomeApiServices>(() => HomeApiServices(getIt<Dio>()));
+  getIt.registerLazySingleton<HomeRepo>(() => HomeRepo(getIt<HomeApiServices>()));
+  getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt<HomeRepo>())); // Changed to factory
 }

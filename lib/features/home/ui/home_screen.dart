@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // For Clipboard
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:drop_down_search_field/drop_down_search_field.dart';
 import 'package:net_openx_inventory/core/helpers/shared_pref_helper.dart';
@@ -232,7 +233,8 @@ class _HomeScreenState extends State<HomeScreen> {
             // Automatically add to table
             _addItemToTable(state.barcodeData!);
           }
-          // Handle successful sales submission
+
+          // Handle successful sales submission - UPDATED SECTION
           if (state.salesResponse != null) {
             showDialog(
               context: context,
@@ -249,14 +251,67 @@ class _HomeScreenState extends State<HomeScreen> {
                       '${scannedItems.length} items submitted',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
+                    const SizedBox(height: 12),
+                    // Display the evrakNo (document number)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.green.shade200),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.receipt, color: Colors.green.shade700, size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Document No:',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                                Text(
+                                  state.salesResponse!.evrakNo,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green.shade700,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Add copy button for document number
+                          IconButton(
+                            icon: Icon(Icons.copy, size: 18, color: Colors.green.shade700),
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: state.salesResponse!.evrakNo));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Document number copied to clipboard'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Display message if available
                     if (state.salesResponse!.message != null) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
                       Text(
                         state.salesResponse!.message!,
                         style: TextStyle(
                           color: Colors.grey.shade600,
                           fontSize: 12,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ],
@@ -718,7 +773,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                     Text(
-                                      'Total Quantity: ${scannedItems.fold<double>(0, (sum, item) => sum + item.balanceQuantity).toStringAsFixed(2)}',
+                                      'Total Quantity: ${scannedItems.fold<double>(0, (sum, item) => sum + item.serialQuantity).toStringAsFixed(2)}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
@@ -895,7 +950,7 @@ class _HomeScreenState extends State<HomeScreen> {
         cariKod: selectedCustomer!.value.toString(), // Customer code
         tarih: DateTime.now().toIso8601String(), // Current date/time
         detailLines: detailLines,
-        // Changed from detaillines to detailLines
+
         token: userToken, // Add the user token
       );
       debugPrint('the sent token roshdy: $userToken');

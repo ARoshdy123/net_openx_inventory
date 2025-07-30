@@ -57,19 +57,34 @@ class HomeCubit extends Cubit<HomeState> {
     );
   }
 
+
   Future<void> createSales(SalesRequestModel salesRequest) async {
     emit(state.copyWith(isLoadingSales: true, error: null));
 
     final result = await homeRepo.postSales(salesRequest);
     result.when(
-      success: (salesResponse) => emit(state.copyWith(
-        salesResponse: salesResponse,
-        isLoadingSales: false,
-      )),
-      failure: (error) => emit(state.copyWith(
-        error: error.apiErrorModel.message ?? 'Failed to submit sales data',
-        isLoadingSales: false,
-      )),
+      success: (salesResponse) {
+        print('SUCCESS: Sales created with evrakNo: ${salesResponse.evrakNo}');
+        emit(state.copyWith(
+          salesResponse: salesResponse,
+          isLoadingSales: false,
+        ));
+      },
+      failure: (error) {
+        print('FAILURE: ${error.apiErrorModel.message}');
+        String errorMessage = 'Failed to submit sales data';
+
+        // Handle specific timeout errors
+        if (error.apiErrorModel.message?.contains('timeout') == true ||
+            error.apiErrorModel.message?.contains('receiveTimeout') == true) {
+          errorMessage = 'Request timed out. The server might be processing your request. Please check if the transaction was created successfully.';
+        }
+
+        emit(state.copyWith(
+          error: error.apiErrorModel.message ?? errorMessage,
+          isLoadingSales: false,
+        ));
+      },
     );
   }
 
