@@ -64,7 +64,7 @@ class HomeCubit extends Cubit<HomeState> {
     final result = await homeRepo.postSales(salesRequest);
     result.when(
       success: (salesResponse) {
-        print('SUCCESS: Sales created with evrakNo: ${salesResponse.evrakNo}');
+        print('SUCCESS: Sales created with SalesNumber: ${salesResponse.evrakNo}');
         emit(state.copyWith(
           salesResponse: salesResponse,
           isLoadingSales: false,

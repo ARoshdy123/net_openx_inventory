@@ -10,10 +10,10 @@ class LoginCubit extends Cubit<LoginState> {
   final LoginRepo _loginRepo;
   LoginCubit(this._loginRepo) : super(LoginState.initial());
 
-  void emitLoginState(String netsisUser, String netsisPassword, String dbName, String dbUser, String dbPassword , String branchCode ) async {
+  void emitLoginState(String netsisUser, String netsisPassword, ) async {
     // Emit loading state
     emit(const LoginState.loading());
-    final response = await _loginRepo.login(LoginRequestBody(netUser: netsisUser, netPassword: netsisPassword, dbName: dbName, dbUser: dbUser, dbPassword: dbPassword, branchCode: branchCode));
+    final response = await _loginRepo.login(LoginRequestBody(netUser: netsisUser, netPassword: netsisPassword,));
 debugPrint('state is $state');
     response.when(
       success: (loginResponse) async {

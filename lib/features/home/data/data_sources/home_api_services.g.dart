@@ -20,16 +20,16 @@ class _HomeApiServices implements HomeApiServices {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BarcodeResponseModel> getBarcode() async {
+  Future<BarcodeResponseModel> getBarcode(String barcode) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'barcode': barcode};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BarcodeResponseModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'Item/api/item/by-barcode?barcode=WHP34%2F027.24.00917',
+            'Item/api/item/by-barcode',
             queryParameters: queryParameters,
             data: _data,
           )

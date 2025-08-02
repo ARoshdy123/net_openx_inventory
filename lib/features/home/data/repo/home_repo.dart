@@ -13,7 +13,7 @@ class HomeRepo {
   HomeRepo(this._homeApiServices);
   Future<ApiResult<BarcodeResponseModel>> getBarcode(String barcode) async {
     try {
-      final response = await _homeApiServices.getBarcode();
+      final response = await _homeApiServices.getBarcode(barcode);
       return ApiResult.success(response);
     } on DioException catch (error) {
       return ApiResult.failure(ErrorHandler.handle(error));

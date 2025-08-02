@@ -86,39 +86,87 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    final simulatedBarcode = await showDialog<String>(
+    String? simulatedBarcode;
+
+    await showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Simulate Barcode Scan'),
-        content: TextField(
-          autofocus: true,
-          decoration: const InputDecoration(
-            labelText: 'Enter barcode',
-            hintText: 'e.g., 1234567890',
+      builder: (context) {
+        final TextEditingController barcodeController = TextEditingController();
+
+        return AlertDialog(
+          title: const Text('Simulate Barcode Scan'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: barcodeController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: 'Enter barcode manually',
+                  hintText: 'e.g., WHP34/027.24.00917',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.qr_code),
+                ),
+                onSubmitted: (value) {
+                  if (value.trim().isNotEmpty) {
+                    simulatedBarcode = value.trim();
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Or use a test barcode:',
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 14,
+                ),
+              ),
+            ],
           ),
-          onSubmitted: (value) => Navigator.of(context).pop(value),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop('1234567890');
-            },
-            child: const Text('Use Test Barcode'),
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                simulatedBarcode = 'WHP34/027.24.00917'; // Test barcode
+                Navigator.of(context).pop();
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.orange.shade100,
+              ),
+              child: const Text('Use Test Barcode'),
+            ),
+            TextButton(
+              onPressed: () {
+                final enteredBarcode = barcodeController.text.trim();
+                if (enteredBarcode.isNotEmpty) {
+                  simulatedBarcode = enteredBarcode;
+                  Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please enter a barcode'),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                }
+              },
+              child: const Text('Scan'),
+            ),
+          ],
+        );
+      },
     );
 
-    if (simulatedBarcode != null && simulatedBarcode.isNotEmpty) {
-      _handleBarcodeScanned(simulatedBarcode);
+    if (simulatedBarcode != null && simulatedBarcode!.isNotEmpty) {
+      _handleBarcodeScanned(simulatedBarcode!);
     }
   }
 
-  // Handle real barcode scanning when ready
+
   Future<void> _scanBarcode() async {
     if (selectedWarehouse == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -130,16 +178,27 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    final scannedBarcode = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BarcodeScannerPage(
-          onBarcodeScanned: (barcode) {
-            _handleBarcodeScanned(barcode);
-          },
+    try {
+      await Navigator.push<String>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BarcodeScannerPage(
+            onBarcodeScanned: (barcode) {
+              // Handle the scanned barcode and pop the scanner page
+              Navigator.pop(context);
+              _handleBarcodeScanned(barcode);
+            },
+          ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error opening camera: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void _handleBarcodeScanned(String barcode) {

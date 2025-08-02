@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:net_openx_inventory/core/helpers/shared_pref_helper.dart';
-import 'package:net_openx_inventory/features/home/ui/home_screen.dart';
 import 'package:net_openx_inventory/features/login/logic/cubit/login_cubit.dart';
 import 'package:net_openx_inventory/features/login/logic/cubit/login_state.dart';
 import 'package:net_openx_inventory/features/login/ui/widget/login_header.dart';
@@ -22,19 +21,19 @@ class _LoginScreenState extends State<LoginScreen> {
   final formKey = GlobalKey<FormState>();
   late final TextEditingController netsisUserController;
   late final TextEditingController netsisPasswordController;
-  late final TextEditingController dbNameController;
-  late final TextEditingController dbUserController;
-  late final TextEditingController dbPasswordController;
-  late final TextEditingController branchCodeController;
+  // late final TextEditingController dbNameController;
+  // late final TextEditingController dbUserController;
+  // late final TextEditingController dbPasswordController;
+  // late final TextEditingController branchCodeController;
   bool _rememberMe = false;
   @override
   void initState() {
     netsisUserController = TextEditingController();
     netsisPasswordController = TextEditingController();
-    dbNameController = TextEditingController();
-    dbUserController = TextEditingController();
-    dbPasswordController = TextEditingController();
-    branchCodeController = TextEditingController();
+    // dbNameController = TextEditingController();
+    // dbUserController = TextEditingController();
+    // dbPasswordController = TextEditingController();
+    // branchCodeController = TextEditingController();
     _loadSavedCredentials();
 
     super.initState();
@@ -46,10 +45,10 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() => _rememberMe = true);
      netsisUserController.text = await SharedPrefHelper.getString(SharedPrefKeys.netsisUser) ?? '';
      netsisPasswordController.text = await SharedPrefHelper.getString(SharedPrefKeys.netsisPassword) ?? '';
-     dbNameController.text = await SharedPrefHelper.getString(SharedPrefKeys.dbName) ?? '';
-     dbUserController.text = await SharedPrefHelper.getString(SharedPrefKeys.dbUser) ?? '';
-     dbPasswordController.text = await SharedPrefHelper.getString(SharedPrefKeys.dbPassword) ?? '';
-     branchCodeController.text = await SharedPrefHelper.getString(SharedPrefKeys.branchCode) ?? '';
+     // dbNameController.text = await SharedPrefHelper.getString(SharedPrefKeys.dbName) ?? '';
+     // dbUserController.text = await SharedPrefHelper.getString(SharedPrefKeys.dbUser) ?? '';
+     // dbPasswordController.text = await SharedPrefHelper.getString(SharedPrefKeys.dbPassword) ?? '';
+     // branchCodeController.text = await SharedPrefHelper.getString(SharedPrefKeys.branchCode) ?? '';
     }
   }
 
@@ -57,10 +56,10 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
    netsisUserController.dispose();
    netsisPasswordController.dispose();
-   dbNameController.dispose();
-   dbUserController.dispose();
-   dbPasswordController.dispose();
-   branchCodeController.dispose();
+   // dbNameController.dispose();
+   // dbUserController.dispose();
+   // dbPasswordController.dispose();
+   // branchCodeController.dispose();
     super.dispose();
   }
 
@@ -80,18 +79,18 @@ class _LoginScreenState extends State<LoginScreen> {
             if (_rememberMe) {
               await SharedPrefHelper.setData(SharedPrefKeys.netsisUser, netsisUserController.text);
               await SharedPrefHelper.setData(SharedPrefKeys.netsisPassword, netsisPasswordController.text);
-              await SharedPrefHelper.setData(SharedPrefKeys.dbName, dbNameController.text);
-              await SharedPrefHelper.setData(SharedPrefKeys.dbUser, dbUserController.text);
-              await SharedPrefHelper.setData(SharedPrefKeys.dbPassword, dbPasswordController.text);
-              await SharedPrefHelper.setData(SharedPrefKeys.branchCode, branchCodeController.text);
+              // await SharedPrefHelper.setData(SharedPrefKeys.dbName, dbNameController.text);
+              // await SharedPrefHelper.setData(SharedPrefKeys.dbUser, dbUserController.text);
+              // await SharedPrefHelper.setData(SharedPrefKeys.dbPassword, dbPasswordController.text);
+              // await SharedPrefHelper.setData(SharedPrefKeys.branchCode, branchCodeController.text);
 
             } else {
               await SharedPrefHelper.removeData(SharedPrefKeys.netsisUser);
               await SharedPrefHelper.removeData(SharedPrefKeys.netsisPassword);
-              await SharedPrefHelper.removeData(SharedPrefKeys.dbName);
-              await SharedPrefHelper.removeData(SharedPrefKeys.dbUser);
-              await SharedPrefHelper.removeData(SharedPrefKeys.dbPassword);
-              await SharedPrefHelper.removeData(SharedPrefKeys.branchCode);
+              // await SharedPrefHelper.removeData(SharedPrefKeys.dbName);
+              // await SharedPrefHelper.removeData(SharedPrefKeys.dbUser);
+              // await SharedPrefHelper.removeData(SharedPrefKeys.dbPassword);
+              // await SharedPrefHelper.removeData(SharedPrefKeys.branchCode);
             }
             context.pushNamed('homeScreen');
           },
@@ -140,46 +139,46 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 8),
 
-                // DB Name
-                CTextFormField(
-                  labelText: 'DB Name',
-                  controller: dbNameController,
-                  prefixIcon: Icon(Iconsax.direct_right, size: 24),
-                  validator:
-                      (value) => value == null || value.isEmpty ? 'Required' : null,
-                ),
-                const SizedBox(height: 8),
-
-                // DB User
-                CTextFormField(
-                  labelText: 'DB User',
-                  controller: dbUserController,
-                  prefixIcon: Icon(Iconsax.direct_right, size: 24),
-                  validator:
-                      (value) => value == null || value.isEmpty ? 'Required' : null,
-                ),
-                const SizedBox(height: 8),
-
-                // DB Password
-                CTextFormField(
-                  labelText: 'DB Password',
-                  controller: dbPasswordController,
-                  isPassword: true,
-                  prefixIcon: Icon(Iconsax.password_check, size: 24),
-                  validator:
-                      (value) => value == null || value.isEmpty ? 'Required' : null,
-                ),
-                const SizedBox(height: 8),
-
-                // Branch Code
-                CTextFormField(
-                  labelText: 'Branch Code',
-                  controller: branchCodeController,
-                  prefixIcon: Icon(Iconsax.direct_right, size: 24),
-                  validator:
-                      (value) => value == null || value.isEmpty ? 'Required' : null,
-                ),
-                const SizedBox(height: 8),
+                // // DB Name
+                // CTextFormField(
+                //   labelText: 'DB Name',
+                //   controller: dbNameController,
+                //   prefixIcon: Icon(Iconsax.direct_right, size: 24),
+                //   validator:
+                //       (value) => value == null || value.isEmpty ? 'Required' : null,
+                // ),
+                // const SizedBox(height: 8),
+                //
+                // // DB User
+                // CTextFormField(
+                //   labelText: 'DB User',
+                //   controller: dbUserController,
+                //   prefixIcon: Icon(Iconsax.direct_right, size: 24),
+                //   validator:
+                //       (value) => value == null || value.isEmpty ? 'Required' : null,
+                // ),
+                // const SizedBox(height: 8),
+                //
+                // // DB Password
+                // CTextFormField(
+                //   labelText: 'DB Password',
+                //   controller: dbPasswordController,
+                //   isPassword: true,
+                //   prefixIcon: Icon(Iconsax.password_check, size: 24),
+                //   validator:
+                //       (value) => value == null || value.isEmpty ? 'Required' : null,
+                // ),
+                // const SizedBox(height: 8),
+                //
+                // // Branch Code
+                // CTextFormField(
+                //   labelText: 'Branch Code',
+                //   controller: branchCodeController,
+                //   prefixIcon: Icon(Iconsax.direct_right, size: 24),
+                //   validator:
+                //       (value) => value == null || value.isEmpty ? 'Required' : null,
+                // ),
+                // const SizedBox(height: 8),
 
                 CheckboxListTile(checkColor: Colors.green,
                   value: _rememberMe,
@@ -197,11 +196,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (formKey.currentState?.validate() == true) {
                         context.read<LoginCubit>().emitLoginState(
                           netsisUserController.text,
-                          netsisPasswordController.text,
-                          dbNameController.text,
-                          dbUserController.text,
-                          dbPasswordController.text,
-                          branchCodeController.text,
+                          netsisPasswordController.text
+                          // dbNameController.text,
+                          // dbUserController.text,
+                          // dbPasswordController.text,
+                          // branchCodeController.text,
                         );
                       }
                     },
